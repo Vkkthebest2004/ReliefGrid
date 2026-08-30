@@ -6,6 +6,9 @@ export const Header: React.FC = () => {
     activeTab, 
     setActiveTab, 
     officer, 
+    userRole,
+    citizenUser,
+    shelterCoordinator,
     notifications, 
     situationChangeDetected, 
     recalculateOptimization,
@@ -24,6 +27,10 @@ export const Header: React.FC = () => {
     switch (activeTab) {
       case 'national-gateway':
         return { section: 'National Command', page: 'State & UT Directory' };
+      case 'official-portal':
+        return { section: 'State Operations', page: 'ASDMA Portal' };
+      case 'role-selection':
+        return { section: 'Gateway Access', page: 'Role Clearance Selection' };
       case 'command-center':
         return { section: 'Emergency Operations', page: 'Command Center COP' };
       case 'resource-grid':
@@ -39,7 +46,7 @@ export const Header: React.FC = () => {
       case 'resource-allocation-analysis':
         return { section: 'Decision Support', page: 'Resource Allocation DSS' };
       case 'simulation-modeling':
-        return { section: 'Simulation Module', page: 'Flood Scenario Alpha' };
+        return { section: 'Simulation Module', page: 'Hydrodynamic Inundation' };
       case 'live-map':
         return { section: 'GIS Operations', page: 'Live Tactical Map' };
       case 'incident-intelligence':
@@ -52,8 +59,38 @@ export const Header: React.FC = () => {
         return { section: 'Field Ops', page: 'Relief Shelters' };
       case 'reports-audit':
         return { section: 'Auditing', page: 'Situation Reports & SITREP' };
+      // 🏠 Shelter Tabs
+      case 'shelter-dashboard':
+        return { section: 'Shelter Hub', page: 'Operations Overview' };
+      case 'shelter-occupancy':
+        return { section: 'Shelter Hub', page: 'Occupancy & Intake Registry' };
+      case 'shelter-citizen-requests':
+        return { section: 'Shelter Hub', page: 'Citizen Distress Triage' };
+      case 'shelter-resources':
+        return { section: 'Shelter Logistics', page: 'Commodity Inventory' };
+      case 'shelter-requests':
+        return { section: 'Shelter Logistics', page: 'DDMA Requisitions' };
+      case 'shelter-ngo-network':
+        return { section: 'Civil Society', page: 'NGO & Volunteer Network' };
+      case 'shelter-announcements':
+        return { section: 'Public Address', page: 'Camp Notices & Alerts' };
+      case 'shelter-settings':
+        return { section: 'Facility Setup', page: 'Parameters & Contacts' };
+      // 👤 Citizen Tabs
+      case 'citizen-home':
+        return { section: 'Citizen Portal', page: 'Emergency Home' };
+      case 'citizen-need-help':
+        return { section: 'Citizen Portal', page: 'Emergency SOS Beacon' };
+      case 'citizen-find-safety':
+        return { section: 'Citizen Portal', page: 'Verified Safety Map' };
+      case 'citizen-report':
+        return { section: 'Citizen Portal', page: 'Report Hazard Incident' };
+      case 'citizen-requests':
+        return { section: 'Citizen Portal', page: 'My Rescue Requests' };
+      case 'missing-persons':
+        return { section: 'Welfare & Family', page: 'Missing Persons & Shelter Locator' };
       default:
-        return { section: 'Operations', page: 'Relief Grid' };
+        return { section: 'Operations', page: 'ReliefGrid Platform' };
     }
   };
 
@@ -189,41 +226,62 @@ export const Header: React.FC = () => {
               onClick={() => setShowUserMenu(!showUserMenu)}
               className="flex items-center gap-2 hover:bg-surface-container-low rounded-full py-1 px-2 transition-colors duration-200 ease-in-out cursor-pointer"
             >
-              <span className="material-symbols-outlined text-[24px]">account_circle</span>
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs ${
+                userRole === 'OFFICER' ? 'bg-blue-600/20 text-blue-400 border border-blue-500/30' :
+                userRole === 'SHELTER_COORDINATOR' ? 'bg-purple-600/20 text-purple-400 border border-purple-500/30' :
+                'bg-amber-600/20 text-amber-400 border border-amber-500/30'
+              }`}>
+                {userRole === 'OFFICER' ? 'GO' : userRole === 'SHELTER_COORDINATOR' ? 'SC' : 'CZ'}
+              </div>
               <div className="hidden lg:flex flex-col text-left">
-                <span className="text-xs font-bold text-primary leading-tight">{officer.role}</span>
-                <span className="text-[10px] text-on-surface-variant font-mono leading-tight">{officer.name}</span>
+                <span className="text-xs font-bold text-primary leading-tight">
+                  {userRole === 'OFFICER' ? officer.role : userRole === 'SHELTER_COORDINATOR' ? 'Camp Coordinator' : 'Citizen'}
+                </span>
+                <span className="text-[10px] text-on-surface-variant font-mono leading-tight">
+                  {userRole === 'OFFICER' ? officer.name : userRole === 'SHELTER_COORDINATOR' ? (shelterCoordinator?.name || 'Maj. Saikia') : (citizenUser?.name || 'Rahul Kalita')}
+                </span>
               </div>
             </button>
 
             {/* User Dropdown */}
             {showUserMenu && (
-              <div className="absolute right-0 mt-2 w-56 bg-surface border border-outline-variant rounded-xl shadow-lg py-2 z-50">
+              <div className="absolute right-0 mt-2 w-64 bg-surface border border-outline-variant rounded-xl shadow-lg py-2 z-50 animate-in fade-in">
                 <div className="px-4 py-2 border-b border-outline-variant">
-                  <div className="text-xs font-bold text-primary">{officer.name}</div>
-                  <div className="text-[11px] text-on-surface-variant">{officer.role}</div>
-                  <div className="text-[10px] text-secondary font-mono mt-0.5">District EOC Guwahati</div>
+                  <div className="text-xs font-bold text-primary">
+                    {userRole === 'OFFICER' ? officer.name : userRole === 'SHELTER_COORDINATOR' ? (shelterCoordinator?.name || 'Maj. Vikramjit Saikia') : (citizenUser?.name || 'Rahul Kalita')}
+                  </div>
+                  <div className="text-[11px] text-on-surface-variant font-mono">
+                    {userRole === 'OFFICER' ? officer.badgeNumber : userRole === 'SHELTER_COORDINATOR' ? (shelterCoordinator?.badgeNumber || 'SDRF-SC-4409') : (citizenUser?.phone || '+91 98640-12345')}
+                  </div>
+                  <div className="text-[10px] text-secondary font-bold mt-1">
+                    Role: {userRole === 'OFFICER' ? '🏛️ Govt Officer' : userRole === 'SHELTER_COORDINATOR' ? '🏠 Shelter Coordinator' : '👤 Citizen'}
+                  </div>
                 </div>
-                <button
-                  onClick={() => {
-                    setShowUserMenu(false);
-                    setActiveTab('secure-login');
-                  }}
-                  className="w-full text-left px-4 py-2 text-xs text-on-surface-variant hover:bg-surface-container-low hover:text-primary transition-colors cursor-pointer flex items-center gap-2"
-                >
-                  <span className="material-symbols-outlined text-[16px]">key</span>
-                  <span>Switch Officer</span>
-                </button>
+
+                <div className="p-2 border-b border-outline-variant space-y-1">
+                  <span className="text-[9px] font-bold text-on-surface-variant uppercase tracking-wider block px-2">
+                    Switch Active Portal:
+                  </span>
+                  <button
+                    onClick={() => {
+                      setShowUserMenu(false);
+                      setActiveTab('role-selection');
+                    }}
+                    className="w-full text-left px-3 py-1.5 rounded-lg text-xs font-bold text-secondary hover:bg-surface-container transition-colors cursor-pointer"
+                  >
+                    ⇄ Open Role Selection Gateway
+                  </button>
+                </div>
+
                 <button
                   onClick={() => {
                     setShowUserMenu(false);
                     logout();
-                    setActiveTab('official-portal');
                   }}
-                  className="w-full text-left px-4 py-2 text-xs text-error hover:bg-error-container/20 transition-colors cursor-pointer flex items-center gap-2 border-t border-outline-variant"
+                  className="w-full text-left px-4 py-2 text-xs text-error hover:bg-error-container/20 transition-colors cursor-pointer flex items-center gap-2"
                 >
                   <span className="material-symbols-outlined text-[16px]">logout</span>
-                  <span>Lock Console / Sign Out</span>
+                  <span>Exit Session & Log Out</span>
                 </button>
               </div>
             )}

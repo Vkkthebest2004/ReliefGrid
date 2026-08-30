@@ -299,10 +299,46 @@ export interface ResourceDispatchMovement {
   progressPct: number;
 }
 
+export type UserRole = 'OFFICER' | 'SHELTER_COORDINATOR' | 'CITIZEN';
+
+export interface CitizenUser {
+  id: string;
+  name: string;
+  email: string;
+  phone?: string;
+  status: 'SAFE' | 'NEED_HELP' | 'EVACUATED';
+  role: 'CITIZEN';
+  createdAt: string;
+}
+
+export interface ShelterCoordinatorUser {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  badgeNumber: string;
+  shelterId: string;
+  shelterName: string;
+  zoneId: string;
+  role: 'SHELTER_COORDINATOR';
+}
+
+export interface OfficerUser {
+  id: string;
+  name: string;
+  badgeNumber: string;
+  department: string;
+  jurisdiction: string;
+  role: 'OFFICER';
+}
+
 export type NavigationTab = 
   | 'national-gateway'
   | 'official-portal'
+  | 'role-selection'
   | 'secure-login'
+  | 'citizen-auth'
+  | 'shelter-auth'
   | 'command-center'
   | 'resource-grid'
   | 'allocation-planner'
@@ -320,9 +356,24 @@ export type NavigationTab =
   | 'response-operations'
   | 'simulation-control'
   | 'reports-audit'
+  | 'master-analytics'
   | 'citizen-portal'
   | 'citizen-sos'
-  | 'shelter-node-operations';
+  | 'citizen-home'
+  | 'citizen-need-help'
+  | 'citizen-find-safety'
+  | 'citizen-report'
+  | 'citizen-requests'
+  | 'shelter-node-operations'
+  | 'shelter-dashboard'
+  | 'shelter-occupancy'
+  | 'shelter-citizen-requests'
+  | 'shelter-resources'
+  | 'shelter-requests'
+  | 'shelter-ngo-network'
+  | 'shelter-announcements'
+  | 'shelter-settings'
+  | 'missing-persons';
 
 // ==========================================
 // 🚨 CITIZEN & VICTIM SOS DISTRESS TYPES

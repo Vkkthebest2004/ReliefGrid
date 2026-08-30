@@ -25,7 +25,10 @@ import type {
   ShelterRestockOrder,
   WaterLevelStatus,
   SOSBeaconStatus,
-  RealtimeSyncEvent
+  RealtimeSyncEvent,
+  UserRole,
+  CitizenUser,
+  ShelterCoordinatorUser
 } from '../types';
 import { citizenService } from '../services/citizenService';
 import { shelterService } from '../services/shelterService';
@@ -102,7 +105,15 @@ interface DisasterContextType {
   activeTab: NavigationTab;
   setActiveTab: (tab: NavigationTab) => void;
   isAuthenticated: boolean;
+  userRole: UserRole | null;
+  selectRole: (role: UserRole) => void;
   login: (officerId?: string, pass?: string) => void;
+  loginAsOfficer: (officerId?: string, pass?: string) => void;
+  loginAsShelterCoordinator: (shelterId?: string, coordinatorName?: string) => void;
+  loginAsCitizen: (name?: string, phone?: string) => void;
+  citizenUser: CitizenUser | null;
+  shelterCoordinator: ShelterCoordinatorUser | null;
+  switchRoleDirectly: (role: UserRole) => void;
   logout: () => void;
   officer: OfficerProfile;
   simulationStep: number;
@@ -257,6 +268,27 @@ export const DisasterProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
   // Auth state
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(true);
+  const [userRole, setUserRole] = useState<UserRole | null>('OFFICER');
+  const [citizenUser, setCitizenUser] = useState<CitizenUser | null>({
+    id: 'CIT-GHY-091',
+    name: 'Rahul Kalita',
+    email: 'rahul.kalita@citizen.in',
+    phone: '+91 98640-12345',
+    status: 'SAFE',
+    role: 'CITIZEN',
+    createdAt: new Date().toISOString()
+  });
+  const [shelterCoordinator, setShelterCoordinator] = useState<ShelterCoordinatorUser | null>({
+    id: 'COORD-001',
+    name: 'Maj. Vikramjit Saikia',
+    email: 'saikia.sdrf@assam.gov.in',
+    phone: '+91 94350-88123',
+    badgeNumber: 'SDRF-SC-4409',
+    shelterId: 'SH-GHY-001',
+    shelterName: 'Pandu Multi-Purpose Disaster Relief Camp #1',
+    zoneId: 'Z-GHY-W-01',
+    role: 'SHELTER_COORDINATOR'
+  });
   const [officer] = useState<OfficerProfile>({
     name: 'P. Bora',
     role: 'District Emergency Response Officer',
@@ -846,12 +878,70 @@ export const DisasterProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   const dismissSituationChangeAlert = () => setSituationChangeDetected(false);
   const clearNotifications = () => setTimeline([]);
 
-  const login = () => {
+  const selectRole = (role: UserRole) => {
+    setUserRole(role);
+  };
+
+  const login = (officerId?: string) => {
     setIsAuthenticated(true);
+    setUserRole('OFFICER');
+    logAudit('VERIFICATION', `Officer authenticated: ${officerId || officer.badgeNumber}`);
     resetScenario();
   };
+
+  const loginAsOfficer = (officerId?: string) => {
+    setIsAuthenticated(true);
+    setUserRole('OFFICER');
+    logAudit('VERIFICATION', `Officer session started for ID: ${officerId || officer.badgeNumber}`);
+  };
+
+  const loginAsShelterCoordinator = (shelterId?: string, coordinatorName?: string) => {
+    setIsAuthenticated(true);
+    setUserRole('SHELTER_COORDINATOR');
+    const target = shelterNodes.find(s => s.id === shelterId) || shelterNodes[0];
+    if (target) setSelectedShelterNode(target);
+    if (coordinatorName) {
+      setShelterCoordinator(prev => prev ? { 
+        ...prev, 
+        name: coordinatorName, 
+        shelterId: target?.id || prev.shelterId, 
+        shelterName: target?.name || prev.shelterName,
+        zoneId: target?.zoneId || prev.zoneId 
+      } : prev);
+    }
+  };
+
+  const loginAsCitizen = (name?: string, phone?: string) => {
+    setIsAuthenticated(true);
+    setUserRole('CITIZEN');
+    if (name || phone) {
+      setCitizenUser(prev => ({
+        id: prev?.id || `CIT-${Date.now().toString().slice(-4)}`,
+        name: name || prev?.name || 'Citizen User',
+        email: prev?.email || 'citizen@reliefgrid.in',
+        phone: phone || prev?.phone || '+91 98640-12345',
+        status: 'SAFE',
+        role: 'CITIZEN',
+        createdAt: prev?.createdAt || new Date().toISOString()
+      }));
+    }
+  };
+
+  const switchRoleDirectly = (role: UserRole) => {
+    setUserRole(role);
+    if (role === 'OFFICER') {
+      setActiveTab('command-center');
+    } else if (role === 'SHELTER_COORDINATOR') {
+      setActiveTab('shelter-dashboard');
+    } else {
+      setActiveTab('citizen-home');
+    }
+  };
+
   const logout = () => {
     setIsAuthenticated(false);
+    setUserRole(null);
+    setActiveTab('role-selection');
     resetScenario();
   };
 
@@ -1158,7 +1248,15 @@ export const DisasterProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         activeTab,
         setActiveTab,
         isAuthenticated,
+        userRole,
+        selectRole,
         login,
+        loginAsOfficer,
+        loginAsShelterCoordinator,
+        loginAsCitizen,
+        citizenUser,
+        shelterCoordinator,
+        switchRoleDirectly,
         logout,
         officer,
         simulationStep,

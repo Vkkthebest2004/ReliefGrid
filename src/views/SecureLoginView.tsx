@@ -39,7 +39,18 @@ export const SecureLoginView: React.FC = () => {
   };
 
   return (
-    <div className="w-full min-h-[85vh] bg-surface text-on-surface font-body-md flex items-center justify-center p-gutter select-none">
+    <div className="w-full min-h-[85vh] bg-surface text-on-surface font-body-md flex flex-col items-center justify-center p-gutter select-none">
+      <div className="w-full max-w-md mb-3 flex items-center justify-between">
+        <button
+          onClick={() => setActiveTab('role-selection')}
+          className="flex items-center gap-1.5 text-xs font-semibold text-on-surface-variant hover:text-primary transition-colors cursor-pointer bg-surface-container-low px-3 py-1.5 rounded-lg border border-outline-variant"
+        >
+          <span className="material-symbols-outlined text-[16px]">arrow_back</span>
+          <span>Back to Role Selection</span>
+        </button>
+        <span className="text-[11px] font-bold text-secondary uppercase tracking-wider">Level 1 Clearance</span>
+      </div>
+
       <main ref={cardRef} className="w-full max-w-md bg-surface-container-lowest border border-outline-variant rounded-xl shadow-[0px_4px_12px_rgba(0,0,0,0.05)] p-stack-lg flex flex-col gap-stack-lg relative overflow-hidden">
         {/* Header / Branding */}
         <header className="flex flex-col items-center text-center gap-stack-sm">

@@ -354,6 +354,90 @@ app.post('/api/volunteers', (req: Request, res: Response) => {
   res.status(201).json({ success: true, data: vol });
 });
 
+// 🔐 CITIZEN & COORDINATOR AUTH ROUTES
+let users: any[] = [
+  {
+    id: 'USR-001',
+    name: 'Rahul Kalita',
+    email: 'rahul.kalita@citizen.in',
+    phone: '+91 98640-12345',
+    role: 'CITIZEN',
+    status: 'SAFE'
+  },
+  {
+    id: 'USR-002',
+    name: 'Maj. Vikramjit Saikia',
+    email: 'saikia.sdrf@assam.gov.in',
+    phone: '+91 94350-88123',
+    role: 'SHELTER_COORDINATOR',
+    shelterId: 'SH-GHY-001'
+  }
+];
+
+app.post('/api/auth/register', (req: Request, res: Response) => {
+  const { name, email, phone, role = 'CITIZEN' } = req.body || {};
+  if (!name || !email) return res.status(400).json({ error: 'Name and email required' });
+  const user = {
+    id: `USR-${Date.now().toString().slice(-4)}`,
+    name,
+    email,
+    phone: phone || '',
+    role,
+    status: 'SAFE',
+    createdAt: new Date().toISOString()
+  };
+  users.unshift(user);
+  res.status(201).json({ token: `jwt-token-${user.id}`, user });
+});
+
+app.post('/api/auth/login', (req: Request, res: Response) => {
+  const { email } = req.body || {};
+  const user = users.find(u => u.email?.toLowerCase() === email?.toLowerCase()) || users[0];
+  res.json({ token: `jwt-token-${user.id}`, user });
+});
+
+app.get('/api/auth/me', (req: Request, res: Response) => {
+  res.json({ user: users[0] });
+});
+
+// 👤 CITIZEN STATUS & SAFETY ROUTES
+app.post('/api/citizen/status', (req: Request, res: Response) => {
+  const { status, citizenId } = req.body;
+  const user = users.find(u => u.id === citizenId) || users[0];
+  if (user) user.status = status;
+  res.json({ success: true, status: user?.status || status });
+});
+
+app.get('/api/citizen/alerts', (_req: Request, res: Response) => {
+  res.json([
+    {
+      id: 'ALERT-GHY-01',
+      title: 'Brahmaputra Rising — Evacuate Low-lying Pandu & Maligaon Sectors',
+      message: 'High schools and designated shelter camps #1, #2, #4 are operational with dry rations.',
+      severity: 'HIGH',
+      createdAt: new Date().toISOString()
+    }
+  ]);
+});
+
+app.get('/api/citizen/safety', (_req: Request, res: Response) => {
+  res.json({
+    shelters: shelters.map(s => ({
+      id: s.id,
+      name: s.name,
+      type: 'Shelter',
+      lat: s.lat,
+      lng: s.lng,
+      address: s.address,
+      phone: s.contactPhone,
+      availableCapacity: s.totalBedCapacity - s.currentOccupancy,
+      capacityStatus: s.currentOccupancy >= s.totalBedCapacity ? 'FULL' : 'GOOD',
+      verified: true,
+      openNow: true
+    }))
+  });
+});
+
 // ⚡ GENERIC REAL-TIME BROADCAST ENDPOINT
 app.post('/api/broadcast', (req: Request, res: Response) => {
   const event = req.body;
