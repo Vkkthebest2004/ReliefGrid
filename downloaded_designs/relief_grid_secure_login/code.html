@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+
+<html class="h-full bg-surface" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Relief Grid - Secure Portal Login</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-tertiary-fixed-variant": "#6c391d",
+                    "primary-fixed-dim": "#aec7f6",
+                    "surface": "#faf9fd",
+                    "on-secondary-container": "#003370",
+                    "on-secondary-fixed-variant": "#004491",
+                    "surface-tint": "#465f88",
+                    "inverse-primary": "#aec7f6",
+                    "on-primary-fixed-variant": "#2d476f",
+                    "tertiary-fixed": "#ffdbcb",
+                    "on-surface": "#1a1b1e",
+                    "on-error": "#ffffff",
+                    "on-error-container": "#93000a",
+                    "inverse-surface": "#2f3033",
+                    "on-primary-fixed": "#001b3d",
+                    "on-tertiary": "#ffffff",
+                    "on-tertiary-fixed": "#341100",
+                    "background": "#faf9fd",
+                    "surface-container-highest": "#e3e2e6",
+                    "error-container": "#ffdad6",
+                    "tertiary": "#180500",
+                    "outline": "#74777f",
+                    "on-secondary": "#ffffff",
+                    "on-primary-container": "#708ab5",
+                    "secondary-container": "#659dfe",
+                    "on-tertiary-container": "#b97958",
+                    "on-secondary-fixed": "#001a40",
+                    "on-surface-variant": "#44474e",
+                    "surface-dim": "#dad9dd",
+                    "on-primary": "#ffffff",
+                    "secondary-fixed-dim": "#acc7ff",
+                    "secondary": "#115cb9",
+                    "error": "#ba1a1a",
+                    "surface-container-low": "#f4f3f7",
+                    "on-background": "#1a1b1e",
+                    "surface-container": "#efedf1",
+                    "primary-container": "#002147",
+                    "tertiary-fixed-dim": "#ffb691",
+                    "inverse-on-surface": "#f1f0f4",
+                    "primary-fixed": "#d6e3ff",
+                    "outline-variant": "#c4c6cf",
+                    "surface-container-high": "#e9e7eb",
+                    "surface-container-lowest": "#ffffff",
+                    "tertiary-container": "#3d1500",
+                    "surface-variant": "#e3e2e6",
+                    "secondary-fixed": "#d7e2ff",
+                    "primary": "#000a1e",
+                    "surface-bright": "#faf9fd"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "stack-sm": "8px",
+                    "gutter": "16px",
+                    "base": "4px",
+                    "stack-lg": "32px",
+                    "stack-md": "16px",
+                    "container-padding": "24px"
+            },
+            "fontFamily": {
+                    "label-sm": [
+                            "Public Sans"
+                    ],
+                    "headline-lg": [
+                            "Public Sans"
+                    ],
+                    "headline-sm": [
+                            "Public Sans"
+                    ],
+                    "body-lg": [
+                            "Public Sans"
+                    ],
+                    "display-lg": [
+                            "Public Sans"
+                    ],
+                    "body-sm": [
+                            "Public Sans"
+                    ],
+                    "label-md": [
+                            "Public Sans"
+                    ],
+                    "body-md": [
+                            "Public Sans"
+                    ],
+                    "headline-md": [
+                            "Public Sans"
+                    ]
+            },
+            "fontSize": {
+                    "label-sm": [
+                            "12px",
+                            {
+                                    "lineHeight": "16px",
+                                    "letterSpacing": "0.02em",
+                                    "fontWeight": "600"
+                            }
+                    ],
+                    "headline-lg": [
+                            "28px",
+                            {
+                                    "lineHeight": "36px",
+                                    "fontWeight": "700"
+                            }
+                    ],
+                    "headline-sm": [
+                            "20px",
+                            {
+                                    "lineHeight": "28px",
+                                    "fontWeight": "600"
+                            }
+                    ],
+                    "body-lg": [
+                            "18px",
+                            {
+                                    "lineHeight": "28px",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "display-lg": [
+                            "36px",
+                            {
+                                    "lineHeight": "44px",
+                                    "letterSpacing": "-0.02em",
+                                    "fontWeight": "700"
+                            }
+                    ],
+                    "body-sm": [
+                            "14px",
+                            {
+                                    "lineHeight": "20px",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "label-md": [
+                            "14px",
+                            {
+                                    "lineHeight": "20px",
+                                    "letterSpacing": "0.01em",
+                                    "fontWeight": "600"
+                            }
+                    ],
+                    "body-md": [
+                            "16px",
+                            {
+                                    "lineHeight": "24px",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "headline-md": [
+                            "24px",
+                            {
+                                    "lineHeight": "32px",
+                                    "fontWeight": "600"
+                            }
+                    ]
+            }
+    },
+        },
+      }
+    </script>
+</head>
+<body class="h-full bg-surface text-on-surface font-body-md flex items-center justify-center p-gutter">
+<main class="w-full max-w-md bg-surface-container-lowest border border-outline-variant rounded-xl shadow-[0px_4px_12px_rgba(0,0,0,0.05)] p-stack-lg flex flex-col gap-stack-lg relative overflow-hidden">
+<!-- Header / Branding -->
+<header class="flex flex-col items-center text-center gap-stack-sm">
+<div class="w-20 h-20 mb-stack-sm flex items-center justify-center">
+<!-- Placeholder for National Emblem -->
+<img class="w-full h-full object-contain" data-alt="A clean, minimalist vector graphic of the National Emblem of India, isolated on a white background. Rendered in a strict, high-contrast monochrome style suitable for an official government portal. Deep navy blue lines against stark white. Authoritative, precise, and highly detailed linework. Modern corporate lighting aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDW_UicJWC9AYhtjef6Y4CPTw3vsl2DD6bTLRZEtcFcc5WYiAkuEssIlfxCze4919FRvel9c6Zo1rl9ginQ90YF2CKipkwHL7pOGUJlvSrieA7xouGHb9wlFSBUMrxFonsx4bbjexZujBEyoeVaBr0KCiRXvR1sk3FScO4LxfpiRtJDk-qSKwFtfpo9K9EjMPpj0lMi8knAowY--xCFuAxpdRlHW6L9CV7XL8Fhh2b9Y6ndnklu0D20BQ"/>
+</div>
+<h1 class="font-headline-lg text-headline-lg text-primary">Relief Grid</h1>
+<h2 class="font-headline-sm text-headline-sm text-on-surface-variant">Guwahati District</h2>
+<p class="font-label-sm text-label-sm text-error mt-base uppercase tracking-wider">Authorized Personnel Only</p>
+</header>
+<!-- Login Form -->
+<form class="flex flex-col gap-stack-md w-full">
+<!-- Officer ID -->
+<div class="flex flex-col gap-base">
+<label class="font-label-md text-label-md text-on-surface-variant" for="officer-id">Officer ID</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline" data-icon="badge">badge</span>
+<input class="w-full pl-10 pr-3 py-2 bg-surface-container-lowest border border-outline-variant rounded focus:border-secondary focus:ring-1 focus:ring-secondary transition-colors font-body-md text-on-surface" id="officer-id" name="officer-id" placeholder="Enter your ID" required="" type="text"/>
+</div>
+</div>
+<!-- Authentication Method Toggle (Simulated) -->
+<div class="flex flex-col gap-base">
+<label class="font-label-md text-label-md text-on-surface-variant" for="auth-method">Authentication Method</label>
+<div class="flex rounded border border-outline-variant overflow-hidden">
+<button class="flex-1 py-2 font-label-md text-label-md bg-surface-container text-primary border-r border-outline-variant" type="button">OTP (SMS)</button>
+<button class="flex-1 py-2 font-label-md text-label-md bg-surface-container-lowest text-on-surface-variant hover:bg-surface-container-low transition-colors" type="button">Secure Password</button>
+</div>
+</div>
+<!-- OTP Input -->
+<div class="flex flex-col gap-base">
+<label class="font-label-md text-label-md text-on-surface-variant flex justify-between" for="otp">
+                    One-Time Password
+                    <button class="text-secondary hover:underline font-label-sm text-label-sm" type="button">Request OTP</button>
+</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline" data-icon="dialpad">dialpad</span>
+<input class="w-full pl-10 pr-3 py-2 bg-surface-container-lowest border border-outline-variant rounded focus:border-secondary focus:ring-1 focus:ring-secondary transition-colors font-body-md text-on-surface tracking-widest" id="otp" maxlength="6" name="otp" placeholder="••••••" required="" type="password"/>
+</div>
+</div>
+<!-- Submit Button -->
+<button class="mt-stack-sm w-full py-3 bg-primary text-on-primary font-label-md text-label-md rounded flex items-center justify-center gap-2 hover:bg-on-primary-fixed-variant transition-colors" type="submit">
+<span class="material-symbols-outlined text-[18px]" data-icon="lock" data-weight="fill" style="font-variation-settings: 'FILL' 1;">lock</span>
+                Authenticate &amp; Access
+            </button>
+</form>
+<!-- Footer / Notices -->
+<footer class="mt-stack-md text-center flex flex-col gap-stack-sm pt-stack-md border-t border-outline-variant">
+<p class="font-label-sm text-label-sm text-on-surface-variant">Government of Assam • Disaster Management Authority</p>
+<div class="flex justify-center gap-gutter font-label-sm text-label-sm text-secondary">
+<a class="hover:underline" href="#">System Status</a>
+<a class="hover:underline" href="#">Help Desk</a>
+</div>
+<p class="font-body-sm text-body-sm text-outline mt-base text-[10px]">
+                Unauthorized access to this system is strictly prohibited and subject to prosecution under applicable cyber laws.
+            </p>
+</footer>
+<!-- Decorative Accent -->
+<div class="absolute top-0 left-0 w-full h-1 bg-primary"></div>
+</main>
+</body></html>

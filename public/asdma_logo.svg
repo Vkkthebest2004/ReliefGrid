@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" fill="none">
+  <!-- Outer Assam Government Seal -->
+  <circle cx="80" cy="80" r="74" fill="#002147" stroke="#000A1E" stroke-width="3"/>
+  <circle cx="80" cy="80" r="66" fill="#FFFFFF"/>
+  
+  <!-- Green & Deep Navy Assam Rings -->
+  <circle cx="80" cy="80" r="58" stroke="#138808" stroke-width="2" fill="none"/>
+  <circle cx="80" cy="80" r="54" stroke="#002147" stroke-width="1" stroke-dasharray="3 2" fill="none"/>
+  
+  <!-- Kaziranga Rhino & Brahmaputra Waves Silhouette -->
+  <g transform="translate(80, 80)">
+    <!-- Water waves (Brahmaputra) -->
+    <path d="M-40 20 Q-20 12 0 20 Q20 28 40 20 L40 32 L-40 32 Z" fill="#115CB9" opacity="0.8"/>
+    <path d="M-40 26 Q-20 18 0 26 Q20 34 40 26 L40 38 L-40 38 Z" fill="#002147"/>
+    
+    <!-- Central Shield / Lotus Crest -->
+    <path d="M-22 -15 C-20 -30 0 -38 0 -38 C0 -38 20 -30 22 -15 C24 5 12 18 0 24 C-12 18 -24 5 -22 -15 Z" fill="#002147"/>
+    <circle cx="0" cy="-12" r="8" fill="#FF9933"/>
+    <circle cx="0" cy="-12" r="4" fill="#FFFFFF"/>
+  </g>
+  
+  <!-- ASDMA Text -->
+  <text x="80" y="38" text-anchor="middle" font-family="'Public Sans', sans-serif" font-size="10" font-weight="900" fill="#000A1E" letter-spacing="1">ASDMA</text>
+  <text x="80" y="132" text-anchor="middle" font-family="'Public Sans', sans-serif" font-size="6.5" font-weight="bold" fill="#002147" letter-spacing="0.5">GOVT OF ASSAM</text>
+</svg>

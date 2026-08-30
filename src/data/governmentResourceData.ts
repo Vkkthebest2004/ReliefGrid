@@ -1,0 +1,333 @@
+import type { GovernmentResource, RegionNeedsAssessment, ResourceDispatchMovement } from '../types';
+
+export const INITIAL_GOVERNMENT_RESOURCES: GovernmentResource[] = [
+  // 1. Essential Supplies
+  {
+    id: 'res-food-kits',
+    name: 'Food Kits (Rations)',
+    category: 'ESSENTIAL_SUPPLIES',
+    unit: 'kits',
+    totalAvailable: 18000,
+    allocated: 0,
+    remaining: 18000,
+    required: 14000,
+    gap: 14000,
+    reserved: 0,
+    inTransit: 0,
+    delivered: 0,
+    status: 'AVAILABLE',
+    urgency: 'CRITICAL',
+    recommendedAction: 'Source 4,000 kits from Jorhat & Nagaon depots to cover Sector 4 shortage.',
+    locations: [
+      { id: 'loc-guwahati-central', name: 'Guwahati Central Warehouse', district: 'Kamrup Metro', lat: 26.155, lng: 91.745, quantity: 8000, status: 'OPERATIONAL', dispatchCapacity: 'HIGH' },
+      { id: 'loc-jorhat-depot', name: 'Jorhat Regional Depot', district: 'Jorhat', lat: 26.750, lng: 94.220, quantity: 5000, status: 'OPERATIONAL', dispatchCapacity: 'HIGH' },
+      { id: 'loc-depot-a', name: 'District Depot A (Dispur)', district: 'Kamrup Metro', lat: 26.140, lng: 91.790, quantity: 3000, status: 'OPERATIONAL', dispatchCapacity: 'MEDIUM' },
+      { id: 'loc-depot-b', name: 'District Depot B (Amingaon)', district: 'Kamrup Rural', lat: 26.180, lng: 91.680, quantity: 2000, status: 'OPERATIONAL', dispatchCapacity: 'MEDIUM' },
+    ]
+  },
+  {
+    id: 'res-drinking-water',
+    name: 'Drinking Water (Potable Tankers)',
+    category: 'ESSENTIAL_SUPPLIES',
+    unit: 'L',
+    totalAvailable: 25000,
+    allocated: 0,
+    remaining: 25000,
+    required: 20000,
+    gap: 20000,
+    reserved: 0,
+    inTransit: 0,
+    delivered: 0,
+    status: 'AVAILABLE',
+    urgency: 'CRITICAL',
+    recommendedAction: 'Activate Tezpur mobile purification line to replenish deficit in Sector 7.',
+    locations: [
+      { id: 'loc-guwahati-water', name: 'Guwahati Jal Board Reserve', district: 'Kamrup Metro', lat: 26.160, lng: 91.730, quantity: 12000, status: 'OPERATIONAL', dispatchCapacity: 'HIGH' },
+      { id: 'loc-nagaon-water', name: 'Nagaon Reserve Hub', district: 'Nagaon', lat: 26.340, lng: 92.680, quantity: 8000, status: 'OPERATIONAL', dispatchCapacity: 'HIGH' },
+      { id: 'loc-tezpur-water', name: 'Tezpur Military Cantonment Line', district: 'Sonitpur', lat: 26.630, lng: 92.790, quantity: 5000, status: 'OPERATIONAL', dispatchCapacity: 'MEDIUM' },
+    ]
+  },
+  {
+    id: 'res-tents',
+    name: 'Emergency Relief Tents',
+    category: 'ESSENTIAL_SUPPLIES',
+    unit: 'units',
+    totalAvailable: 2000,
+    allocated: 0,
+    remaining: 2000,
+    required: 1500,
+    gap: 1500,
+    reserved: 0,
+    inTransit: 0,
+    delivered: 0,
+    status: 'AVAILABLE',
+    urgency: 'HIGH',
+    recommendedAction: 'Dispatch 600 tents to Sector 4 and Sector 2 makeshift relief camps.',
+    locations: [
+      { id: 'loc-guwahati-central', name: 'Guwahati Central Warehouse', district: 'Kamrup Metro', lat: 26.155, lng: 91.745, quantity: 1200, status: 'OPERATIONAL', dispatchCapacity: 'HIGH' },
+      { id: 'loc-jorhat-depot', name: 'Jorhat Regional Depot', district: 'Jorhat', lat: 26.750, lng: 94.220, quantity: 800, status: 'OPERATIONAL', dispatchCapacity: 'HIGH' },
+    ]
+  },
+  {
+    id: 'res-blankets',
+    name: 'Thermal Blankets',
+    category: 'ESSENTIAL_SUPPLIES',
+    unit: 'units',
+    totalAvailable: 8500,
+    allocated: 0,
+    remaining: 8500,
+    required: 6000,
+    gap: 6000,
+    reserved: 0,
+    inTransit: 0,
+    delivered: 0,
+    status: 'AVAILABLE',
+    urgency: 'MODERATE',
+    locations: [
+      { id: 'loc-guwahati-central', name: 'Guwahati Central Warehouse', district: 'Kamrup Metro', lat: 26.155, lng: 91.745, quantity: 5000, status: 'OPERATIONAL', dispatchCapacity: 'HIGH' },
+      { id: 'loc-depot-a', name: 'District Depot A (Dispur)', district: 'Kamrup Metro', lat: 26.140, lng: 91.790, quantity: 3500, status: 'OPERATIONAL', dispatchCapacity: 'MEDIUM' },
+    ]
+  },
+
+  // 2. Medical
+  {
+    id: 'res-medicines',
+    name: 'Essential Medicines & IV Fluids',
+    category: 'MEDICAL',
+    unit: 'kits',
+    totalAvailable: 7500,
+    allocated: 0,
+    remaining: 7500,
+    required: 6000,
+    gap: 6000,
+    reserved: 0,
+    inTransit: 0,
+    delivered: 0,
+    status: 'AVAILABLE',
+    urgency: 'CRITICAL',
+    recommendedAction: 'Air-drop 800 trauma packs into inundated Sector 7.',
+    locations: [
+      { id: 'loc-gmch-hub', name: 'Gauhati Medical College Reserve', district: 'Kamrup Metro', lat: 26.150, lng: 91.770, quantity: 4500, status: 'OPERATIONAL', dispatchCapacity: 'HIGH' },
+      { id: 'loc-jorhat-medical', name: 'Jorhat Medical Depot', district: 'Jorhat', lat: 26.750, lng: 94.220, quantity: 3000, status: 'OPERATIONAL', dispatchCapacity: 'HIGH' },
+    ]
+  },
+  {
+    id: 'res-medical-teams',
+    name: 'Specialist Medical Teams',
+    category: 'MEDICAL',
+    unit: 'teams',
+    totalAvailable: 20,
+    allocated: 0,
+    remaining: 20,
+    required: 16,
+    gap: 16,
+    reserved: 0,
+    inTransit: 0,
+    delivered: 0,
+    status: 'AVAILABLE',
+    urgency: 'HIGH',
+    recommendedAction: 'Deploy 2 teams to Sector 4 and 2 teams to Sector 7 field hospitals.',
+    locations: [
+      { id: 'loc-gmch-hub', name: 'Gauhati Medical College Reserve', district: 'Kamrup Metro', lat: 26.150, lng: 91.770, quantity: 12, status: 'OPERATIONAL', dispatchCapacity: 'HIGH' },
+      { id: 'loc-aiims-guwahati', name: 'AIIMS Guwahati Reserve', district: 'Kamrup Rural', lat: 26.240, lng: 91.600, quantity: 8, status: 'OPERATIONAL', dispatchCapacity: 'HIGH' },
+    ]
+  },
+  {
+    id: 'res-ambulances',
+    name: '4x4 Advanced Life Support Ambulances',
+    category: 'MEDICAL',
+    unit: 'vehicles',
+    totalAvailable: 28,
+    allocated: 0,
+    remaining: 28,
+    required: 22,
+    gap: 22,
+    reserved: 0,
+    inTransit: 0,
+    delivered: 0,
+    status: 'AVAILABLE',
+    urgency: 'HIGH',
+    locations: [
+      { id: 'loc-gmch-hub', name: 'Gauhati Medical College Reserve', district: 'Kamrup Metro', lat: 26.150, lng: 91.770, quantity: 16, status: 'OPERATIONAL', dispatchCapacity: 'HIGH' },
+      { id: 'loc-depot-a', name: 'District Depot A (Dispur)', district: 'Kamrup Metro', lat: 26.140, lng: 91.790, quantity: 12, status: 'OPERATIONAL', dispatchCapacity: 'HIGH' },
+    ]
+  },
+
+  // 3. Rescue
+  {
+    id: 'res-boats',
+    name: 'SDRF Inflatable Motor Boats',
+    category: 'RESCUE',
+    unit: 'boats',
+    totalAvailable: 35,
+    allocated: 0,
+    remaining: 35,
+    required: 28,
+    gap: 28,
+    reserved: 0,
+    inTransit: 0,
+    delivered: 0,
+    status: 'AVAILABLE',
+    urgency: 'CRITICAL',
+    recommendedAction: 'Stage 10 boats at Pandu Port and 8 boats at North Guwahati ghats.',
+    locations: [
+      { id: 'loc-pandu-sdrf', name: 'Pandu Port SDRF Water Station', district: 'Kamrup Metro', lat: 26.168, lng: 91.690, quantity: 20, status: 'OPERATIONAL', dispatchCapacity: 'HIGH' },
+      { id: 'loc-depot-b', name: 'District Depot B (Amingaon)', district: 'Kamrup Rural', lat: 26.180, lng: 91.680, quantity: 15, status: 'OPERATIONAL', dispatchCapacity: 'HIGH' },
+    ]
+  },
+  {
+    id: 'res-rescue-teams',
+    name: 'NDRF / SDRF Search & Rescue Teams',
+    category: 'RESCUE',
+    unit: 'teams',
+    totalAvailable: 24,
+    allocated: 0,
+    remaining: 24,
+    required: 20,
+    gap: 20,
+    reserved: 0,
+    inTransit: 0,
+    delivered: 0,
+    status: 'AVAILABLE',
+    urgency: 'CRITICAL',
+    locations: [
+      { id: 'loc-pandu-sdrf', name: 'Pandu Port SDRF Water Station', district: 'Kamrup Metro', lat: 26.168, lng: 91.690, quantity: 14, status: 'OPERATIONAL', dispatchCapacity: 'HIGH' },
+      { id: 'loc-jorhat-depot', name: 'Jorhat Regional Depot', district: 'Jorhat', lat: 26.750, lng: 94.220, quantity: 10, status: 'OPERATIONAL', dispatchCapacity: 'HIGH' },
+    ]
+  },
+
+  // 4. Infrastructure
+  {
+    id: 'res-generators',
+    name: '250 kVA Mobile Diesel Generators',
+    category: 'INFRASTRUCTURE',
+    unit: 'units',
+    totalAvailable: 15,
+    allocated: 0,
+    remaining: 15,
+    required: 12,
+    gap: 12,
+    reserved: 0,
+    inTransit: 0,
+    delivered: 0,
+    status: 'AVAILABLE',
+    urgency: 'HIGH',
+    locations: [
+      { id: 'loc-guwahati-central', name: 'Guwahati Central Warehouse', district: 'Kamrup Metro', lat: 26.155, lng: 91.745, quantity: 9, status: 'OPERATIONAL', dispatchCapacity: 'HIGH' },
+      { id: 'loc-depot-a', name: 'District Depot A (Dispur)', district: 'Kamrup Metro', lat: 26.140, lng: 91.790, quantity: 6, status: 'OPERATIONAL', dispatchCapacity: 'MEDIUM' },
+    ]
+  },
+  {
+    id: 'res-water-pumps',
+    name: 'Heavy High-Volume Dewatering Pumps',
+    category: 'INFRASTRUCTURE',
+    unit: 'pumps',
+    totalAvailable: 22,
+    allocated: 0,
+    remaining: 22,
+    required: 18,
+    gap: 18,
+    reserved: 0,
+    inTransit: 0,
+    delivered: 0,
+    status: 'AVAILABLE',
+    urgency: 'HIGH',
+    locations: [
+      { id: 'loc-guwahati-central', name: 'Guwahati Central Warehouse', district: 'Kamrup Metro', lat: 26.155, lng: 91.745, quantity: 14, status: 'OPERATIONAL', dispatchCapacity: 'HIGH' },
+      { id: 'loc-depot-b', name: 'District Depot B (Amingaon)', district: 'Kamrup Rural', lat: 26.180, lng: 91.680, quantity: 8, status: 'OPERATIONAL', dispatchCapacity: 'MEDIUM' },
+    ]
+  },
+
+  // 5. Personnel
+  {
+    id: 'res-volunteers',
+    name: 'Civil Defense & Disaster Volunteers',
+    category: 'PERSONNEL',
+    unit: 'personnel',
+    totalAvailable: 350,
+    allocated: 0,
+    remaining: 350,
+    required: 300,
+    gap: 300,
+    reserved: 0,
+    inTransit: 0,
+    delivered: 0,
+    status: 'AVAILABLE',
+    urgency: 'MODERATE',
+    locations: [
+      { id: 'loc-guwahati-central', name: 'Guwahati Central Warehouse', district: 'Kamrup Metro', lat: 26.155, lng: 91.745, quantity: 200, status: 'OPERATIONAL', dispatchCapacity: 'HIGH' },
+      { id: 'loc-depot-a', name: 'District Depot A (Dispur)', district: 'Kamrup Metro', lat: 26.140, lng: 91.790, quantity: 150, status: 'OPERATIONAL', dispatchCapacity: 'HIGH' },
+    ]
+  }
+];
+
+export const INITIAL_REGION_ASSESSMENTS: RegionNeedsAssessment[] = [
+  {
+    id: 'region-sector-4',
+    name: 'Sector 4 - Downtown Hub',
+    code: 'SEC-04',
+    district: 'Kamrup Metro',
+    severity: 'CRITICAL',
+    populationAffected: 8420,
+    isolatedPopulation: 1510,
+    urgencyLevel: 'P1 — IMMEDIATE',
+    roadAccessibility: 'RESTRICTED',
+    sheltersRequired: 4,
+    medicalRisk: 'CRITICAL',
+    accessibility: 'LIMITED',
+    priorityScore: 92,
+    lat: 26.152,
+    lng: 91.750,
+    requirements: [
+      { resourceId: 'res-drinking-water', resourceName: 'Drinking Water (Potable Tankers)', category: 'ESSENTIAL_SUPPLIES', requiredQuantity: 12000, allocatedQuantity: 0, remainingQuantity: 12000, unit: 'L', priority: 'CRITICAL', timeToCritical: '2.5 Hours' },
+      { resourceId: 'res-boats', resourceName: 'SDRF Inflatable Motor Boats', category: 'RESCUE', requiredQuantity: 6, allocatedQuantity: 0, remainingQuantity: 6, unit: 'boats', priority: 'CRITICAL', timeToCritical: '1.0 Hours' },
+      { resourceId: 'res-medicines', resourceName: 'Essential Medicines & IV Fluids', category: 'MEDICAL', requiredQuantity: 2000, allocatedQuantity: 0, remainingQuantity: 2000, unit: 'kits', priority: 'CRITICAL', timeToCritical: '3.0 Hours' },
+      { resourceId: 'res-food-kits', resourceName: 'Food Kits (Rations)', category: 'ESSENTIAL_SUPPLIES', requiredQuantity: 4000, allocatedQuantity: 0, remainingQuantity: 4000, unit: 'kits', priority: 'HIGH', timeToCritical: '6.0 Hours' },
+    ]
+  },
+  {
+    id: 'region-sector-7',
+    name: 'Sector 7 - Westside Riverside',
+    code: 'SEC-07',
+    district: 'Kamrup Metro',
+    severity: 'CRITICAL',
+    populationAffected: 6780,
+    isolatedPopulation: 2050,
+    urgencyLevel: 'P1 — IMMEDIATE',
+    roadAccessibility: 'BLOCKED',
+    sheltersRequired: 6,
+    medicalRisk: 'CRITICAL',
+    accessibility: 'CUT_OFF',
+    priorityScore: 96,
+    lat: 26.165,
+    lng: 91.685,
+    requirements: [
+      { resourceId: 'res-boats', resourceName: 'SDRF Inflatable Motor Boats', category: 'RESCUE', requiredQuantity: 8, allocatedQuantity: 0, remainingQuantity: 8, unit: 'boats', priority: 'CRITICAL', timeToCritical: '1.5 Hours' },
+      { resourceId: 'res-drinking-water', resourceName: 'Drinking Water (Potable Tankers)', category: 'ESSENTIAL_SUPPLIES', requiredQuantity: 8000, allocatedQuantity: 0, remainingQuantity: 8000, unit: 'L', priority: 'CRITICAL', timeToCritical: '3.0 Hours' },
+      { resourceId: 'res-medical-teams', resourceName: 'Specialist Medical Teams', category: 'MEDICAL', requiredQuantity: 4, allocatedQuantity: 0, remainingQuantity: 4, unit: 'teams', priority: 'HIGH', timeToCritical: '4.0 Hours' },
+    ]
+  },
+  {
+    id: 'region-sector-2',
+    name: 'Sector 2 - Northern Heights',
+    code: 'SEC-02',
+    district: 'Kamrup Metro',
+    severity: 'HIGH',
+    populationAffected: 5200,
+    isolatedPopulation: 410,
+    urgencyLevel: 'P2 — HIGH',
+    roadAccessibility: 'ACCESSIBLE',
+    sheltersRequired: 2,
+    medicalRisk: 'MODERATE',
+    accessibility: 'ACCESSIBLE',
+    priorityScore: 74,
+    lat: 26.195,
+    lng: 91.730,
+    requirements: [
+      { resourceId: 'res-tents', resourceName: 'Emergency Relief Tents', category: 'ESSENTIAL_SUPPLIES', requiredQuantity: 600, allocatedQuantity: 0, remainingQuantity: 600, unit: 'units', priority: 'HIGH', timeToCritical: '8.0 Hours' },
+      { resourceId: 'res-generators', resourceName: '250 kVA Mobile Diesel Generators', category: 'INFRASTRUCTURE', requiredQuantity: 4, allocatedQuantity: 0, remainingQuantity: 4, unit: 'units', priority: 'HIGH', timeToCritical: '5.0 Hours' },
+    ]
+  }
+];
+
+export const INITIAL_DISPATCH_MOVEMENTS: ResourceDispatchMovement[] = [];
