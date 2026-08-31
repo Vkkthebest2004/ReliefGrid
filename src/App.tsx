@@ -172,7 +172,7 @@ const AppContent: React.FC = () => {
 
   if (activeTab === 'role-selection') {
     return (
-      <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-body-md">
+      <div className="min-h-screen bg-[#f7f9fb] text-[#0F172A] flex flex-col font-['Inter',sans-serif]">
         <RoleSelectionView />
       </div>
     );
@@ -180,7 +180,7 @@ const AppContent: React.FC = () => {
 
   if (activeTab === 'secure-login') {
     return (
-      <div className="min-h-screen bg-surface text-on-surface flex flex-col font-body-md">
+      <div className="min-h-screen bg-[#f7f9fb] text-[#0F172A] flex flex-col font-['Inter',sans-serif]">
         <SecureLoginView />
       </div>
     );
@@ -188,16 +188,16 @@ const AppContent: React.FC = () => {
 
   if (activeTab === 'citizen-auth') {
     return (
-      <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-body-md">
-        <CitizenAuthView />
+      <div className="min-h-screen bg-[#f7f9fb] text-[#0F172A] flex flex-col font-['Inter',sans-serif]">
+        <RoleSelectionView />
       </div>
     );
   }
 
   if (activeTab === 'shelter-auth') {
     return (
-      <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-body-md">
-        <ShelterAuthView />
+      <div className="min-h-screen bg-[#f7f9fb] text-[#0F172A] flex flex-col font-['Inter',sans-serif]">
+        <RoleSelectionView />
       </div>
     );
   }

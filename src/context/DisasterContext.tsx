@@ -231,7 +231,6 @@ export const DisasterProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   const [operations] = useState<OperationTask[]>(INITIAL_OPERATIONS);
   const [timeline, setTimeline] = useState<ActivityTimelineEvent[]>(INITIAL_TIMELINE);
   const [auditLogs, setAuditLogs] = useState<AuditLogEntry[]>(INITIAL_AUDIT_LOGS);
-  const [activeTab, setActiveTab] = useState<NavigationTab>('national-gateway');
   
   // Government Resource Management Core State
   const [governmentResources, setGovernmentResources] = useState<GovernmentResource[]>(INITIAL_GOVERNMENT_RESOURCES);
@@ -242,6 +241,8 @@ export const DisasterProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   
   // Reactive Needs Assessment & RAE Engine state
   const [detailedRegionNeeds, setDetailedRegionNeeds] = useState<DetailedRegionNeed[]>(INITIAL_DETAILED_REGIONS);
+  // Navigation & Active Tab (Initial Landing on Access Gateway)
+  const [activeTab, setActiveTab] = useState<NavigationTab>('role-selection');
   const [raeRequirements, setRaeRequirements] = useState<Requirement[]>(INITIAL_RAE_REQUIREMENTS);
   const [raeSources, setRaeSources] = useState<SupplySource[]>(INITIAL_RAE_SOURCES);
   const [globalToast, setGlobalToast] = useState<ToastMessage | null>(null);
@@ -266,9 +267,9 @@ export const DisasterProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   const toggleSidebarCollapse = () => setIsSidebarCollapsed(prev => !prev);
   const closeSidebar = () => setIsSidebarOpen(false);
 
-  // Auth state
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(true);
-  const [userRole, setUserRole] = useState<UserRole | null>('OFFICER');
+  // Auth state (Default false until session initialized on Access Gateway)
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [userRole, setUserRole] = useState<UserRole | null>(null);
   const [citizenUser, setCitizenUser] = useState<CitizenUser | null>({
     id: 'CIT-GHY-091',
     name: 'Rahul Kalita',
