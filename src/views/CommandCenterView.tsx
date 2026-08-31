@@ -30,30 +30,30 @@ export const CommandCenterView: React.FC = () => {
   const shelterCapacity = shelterNodes.reduce((a, s) => a + s.totalBedCapacity, 0);
 
   return (
-    <div className="space-y-4 font-body-md">
+    <div className="space-y-4 font-['Inter',sans-serif] bg-[#f8fafc] text-[#0f172a] min-h-screen pb-16">
       
       {/* 1. Active Event Top Banner */}
-      <div className="bg-surface border border-outline-variant rounded-xl p-4 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-xs">
+      <div className="bg-white border border-[#e2e8f0] rounded-[4px] p-4 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-xs">
         <div className="flex items-start gap-3.5">
-          <div className="w-10 h-10 rounded-lg bg-error-container/40 border border-error/30 flex items-center justify-center text-error flex-shrink-0 mt-0.5">
+          <div className="w-10 h-10 rounded-[4px] bg-[#fee2e2] border border-[#fca5a5] flex items-center justify-center text-[#dc2626] flex-shrink-0 mt-0.5">
             <AlertOctagon className="w-5 h-5" />
           </div>
           
           <div>
             <div className="flex items-center gap-2">
-              <span className="text-[10px] font-bold tracking-wider uppercase text-error bg-error-container px-2 py-0.5 rounded font-mono">
+              <span className="text-[10px] font-bold tracking-wider uppercase text-[#dc2626] bg-[#fee2e2] px-2 py-0.5 rounded-[2px] font-['JetBrains_Mono',monospace]">
                 ACTIVE INCIDENT: {disasterEvent.id}
               </span>
-              <span className="text-xs text-on-surface-variant font-mono">
+              <span className="text-xs text-[#475569] font-['JetBrains_Mono',monospace]">
                 Started: {disasterEvent.startedAt}
               </span>
             </div>
             
-            <h2 className="text-lg font-bold text-primary font-heading mt-0.5 leading-tight">
+            <h2 className="text-lg font-bold text-[#0f172a] font-['Outfit',sans-serif] mt-0.5 leading-tight">
               {disasterEvent.type} — {disasterEvent.secondaryHazard}
             </h2>
             
-            <p className="text-xs text-on-surface-variant mt-1 max-w-3xl leading-snug">
+            <p className="text-xs text-[#475569] mt-1 max-w-3xl leading-snug">
               {disasterEvent.description}
             </p>
           </div>
@@ -63,7 +63,7 @@ export const CommandCenterView: React.FC = () => {
         <div className="flex items-center gap-2 flex-shrink-0 self-start md:self-center">
           <button
             onClick={() => setActiveTab('region-assessment')}
-            className="px-4 py-2.5 bg-primary hover:bg-primary-container text-on-primary text-xs font-bold rounded-lg shadow-sm transition-colors flex items-center gap-2 cursor-pointer"
+            className="px-4 py-2.5 bg-[#004ac6] hover:bg-[#2563eb] text-white text-xs font-['JetBrains_Mono',monospace] font-bold uppercase rounded-[4px] shadow-xs transition-colors flex items-center gap-2 cursor-pointer"
           >
             <span>Assess Region Needs</span>
             <ArrowRight className="w-4 h-4" />
@@ -73,198 +73,183 @@ export const CommandCenterView: React.FC = () => {
 
       {/* 2. Live KPI Strip — Real Numbers from Context */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-        <div className="bg-surface border border-outline-variant rounded-xl p-3 shadow-xs">
-          <div className="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider mb-1">People Affected</div>
-          <div className="text-xl font-black text-error font-mono">{totalAffected.toLocaleString()}</div>
-          <div className="text-[10px] text-on-surface-variant">{zones.length} Active Zones</div>
+        <div className="bg-white border border-[#e2e8f0] rounded-[4px] p-3 shadow-xs">
+          <div className="text-[10px] font-bold text-[#475569] uppercase font-['JetBrains_Mono',monospace] tracking-wider mb-1">People Affected</div>
+          <div className="text-xl font-bold text-[#dc2626] font-['JetBrains_Mono',monospace]">{totalAffected.toLocaleString()}</div>
+          <div className="text-[10px] text-[#475569] font-['JetBrains_Mono',monospace]">{zones.length} Active Zones</div>
         </div>
-        <div className="bg-surface border border-outline-variant rounded-xl p-3 shadow-xs">
-          <div className="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider mb-1">Total Inventory</div>
-          <div className="text-xl font-black text-primary font-mono">{totalAvailable.toLocaleString()}</div>
-          <div className="text-[10px] text-on-surface-variant">{governmentResources.length} Resource Types</div>
+        <div className="bg-white border border-[#e2e8f0] rounded-[4px] p-3 shadow-xs">
+          <div className="text-[10px] font-bold text-[#475569] uppercase font-['JetBrains_Mono',monospace] tracking-wider mb-1">Total Inventory</div>
+          <div className="text-xl font-bold text-[#004ac6] font-['JetBrains_Mono',monospace]">{totalAvailable.toLocaleString()}</div>
+          <div className="text-[10px] text-[#475569] font-['JetBrains_Mono',monospace]">{governmentResources.length} Resource Types</div>
         </div>
-        <div className="bg-surface border border-outline-variant rounded-xl p-3 shadow-xs">
-          <div className="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider mb-1">Deployed</div>
-          <div className="text-xl font-black text-secondary font-mono">{totalAllocated.toLocaleString()}</div>
-          <div className="text-[10px] text-on-surface-variant">{totalAvailable > 0 ? Math.round((totalAllocated / totalAvailable) * 100) : 0}% Utilization</div>
+        <div className="bg-white border border-[#e2e8f0] rounded-[4px] p-3 shadow-xs">
+          <div className="text-[10px] font-bold text-[#475569] uppercase font-['JetBrains_Mono',monospace] tracking-wider mb-1">Deployed</div>
+          <div className="text-xl font-bold text-[#006780] font-['JetBrains_Mono',monospace]">{totalAllocated.toLocaleString()}</div>
+          <div className="text-[10px] text-[#475569] font-['JetBrains_Mono',monospace]">{totalAvailable > 0 ? Math.round((totalAllocated / totalAvailable) * 100) : 0}% Utilization</div>
         </div>
-        <div className="bg-surface border border-outline-variant rounded-xl p-3 shadow-xs">
-          <div className="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider mb-1">Remaining</div>
-          <div className="text-xl font-black text-green-700 font-mono">{totalRemaining.toLocaleString()}</div>
-          <div className="text-[10px] text-green-700 font-semibold">Ready to Dispatch</div>
+        <div className="bg-white border border-[#e2e8f0] rounded-[4px] p-3 shadow-xs">
+          <div className="text-[10px] font-bold text-[#475569] uppercase font-['JetBrains_Mono',monospace] tracking-wider mb-1">Remaining</div>
+          <div className="text-xl font-bold text-[#059669] font-['JetBrains_Mono',monospace]">{totalRemaining.toLocaleString()}</div>
+          <div className="text-[10px] text-[#059669] font-['JetBrains_Mono',monospace] font-semibold">Ready to Dispatch</div>
         </div>
-        <div className="bg-surface border border-outline-variant rounded-xl p-3 shadow-xs">
-          <div className="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider mb-1">Active SOS</div>
-          <div className="text-xl font-black text-error font-mono">{activeSOS}</div>
-          <div className="text-[10px] text-on-surface-variant">{criticalDeficits} Critical Shortages</div>
+        <div className="bg-white border border-[#e2e8f0] rounded-[4px] p-3 shadow-xs">
+          <div className="text-[10px] font-bold text-[#475569] uppercase font-['JetBrains_Mono',monospace] tracking-wider mb-1">Active SOS</div>
+          <div className="text-xl font-bold text-[#dc2626] font-['JetBrains_Mono',monospace]">{activeSOS}</div>
+          <div className="text-[10px] text-[#475569] font-['JetBrains_Mono',monospace]">{criticalDeficits} Critical Shortages</div>
         </div>
-        <div className="bg-surface border border-outline-variant rounded-xl p-3 shadow-xs">
-          <div className="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider mb-1">Shelters</div>
-          <div className="text-xl font-black text-primary font-mono">{shelterOccupancy.toLocaleString()}<span className="text-sm text-on-surface-variant font-normal">/{shelterCapacity.toLocaleString()}</span></div>
-          <div className="text-[10px] text-on-surface-variant">{shelterCapacity > 0 ? Math.round((shelterOccupancy / shelterCapacity) * 100) : 0}% Occupied</div>
+        <div className="bg-white border border-[#e2e8f0] rounded-[4px] p-3 shadow-xs">
+          <div className="text-[10px] font-bold text-[#475569] uppercase font-['JetBrains_Mono',monospace] tracking-wider mb-1">Shelter Saturation</div>
+          <div className="text-xl font-bold text-[#b45309] font-['JetBrains_Mono',monospace]">
+            {shelterCapacity > 0 ? Math.round((shelterOccupancy / shelterCapacity) * 100) : 0}%
+          </div>
+          <div className="text-[10px] text-[#475569] font-['JetBrains_Mono',monospace]">{shelterOccupancy}/{shelterCapacity} Beds</div>
         </div>
       </div>
 
-      {/* 3. Resource Allocation Summary Bar */}
-      <div className="bg-surface border border-outline-variant rounded-xl p-4 shadow-xs">
+      {/* 3. Hydrodynamic Inundation Simulation Controller */}
+      <SimulationController />
+
+      {/* 4. Common Operating Picture (COP) Tactical Map */}
+      <div className="bg-white border border-[#e2e8f0] rounded-[4px] p-4 shadow-xs">
         <div className="flex items-center justify-between mb-3">
-          <h3 className="text-sm font-bold text-primary flex items-center gap-2">
-            <span className="material-symbols-outlined text-[18px]">inventory_2</span>
-            Resource Allocation Overview
-          </h3>
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => setActiveTab('asset-inventory')}
-              className="text-xs font-semibold text-primary hover:underline flex items-center gap-1 cursor-pointer font-mono"
-            >
-              Full Inventory <ArrowUpRight className="w-3 h-3" />
-            </button>
+          <div>
+            <h3 className="text-base font-bold text-[#0f172a] font-['Outfit',sans-serif]">
+              Common Operating Picture (COP) Tactical Map
+            </h3>
+            <p className="text-xs text-[#475569]">
+              Real-time multi-layer GIS visualization showing affected zones, logistics convoys, flood contours, and facility nodes.
+            </p>
+          </div>
+          
+          <button
+            onClick={() => setActiveTab('live-map')}
+            className="text-xs font-['JetBrains_Mono',monospace] font-bold text-[#004ac6] hover:underline flex items-center gap-1 cursor-pointer"
+          >
+            <span>Full-Screen GIS Map</span>
+            <ArrowUpRight className="w-3.5 h-3.5" />
+          </button>
+        </div>
+
+        <div className="rounded-[4px] overflow-hidden border border-[#e2e8f0] h-[450px]">
+          <GisMap />
+        </div>
+      </div>
+
+      {/* 5. Priority Zones & Deficit Register Table */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
+        
+        {/* Left: District Priority Register (col-span-7) */}
+        <div className="lg:col-span-7 bg-white border border-[#e2e8f0] rounded-[4px] p-4 shadow-xs">
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-sm font-bold text-[#0f172a] font-['Outfit',sans-serif]">
+              District Priority Ranking & Need Scores
+            </h3>
+            <span className="text-[11px] text-[#475569] font-['JetBrains_Mono',monospace]">
+              Sorted by Priority Score
+            </span>
+          </div>
+
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-xs border-collapse font-['Inter',sans-serif]">
+              <thead>
+                <tr className="bg-[#f8fafc] text-[#475569] border-b border-[#e2e8f0]">
+                  <th className="py-2 px-2 font-semibold">Zone</th>
+                  <th className="py-2 px-2 font-semibold">Affected</th>
+                  <th className="py-2 px-2 font-semibold">Medical Cases</th>
+                  <th className="py-2 px-2 font-semibold">Need Score</th>
+                  <th className="py-2 px-2 font-semibold text-right">Action</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-[#e2e8f0]">
+                {zones.sort((a, b) => b.severityScore - a.severityScore).map((z) => (
+                  <tr key={z.id} className="hover:bg-[#f8fafc] transition-colors">
+                    <td className="py-2.5 px-2 font-bold text-[#0f172a]">
+                      <div>{z.name}</div>
+                      <span className="text-[10px] text-[#475569] font-['JetBrains_Mono',monospace]">{z.code}</span>
+                    </td>
+                    <td className="py-2.5 px-2 font-['JetBrains_Mono',monospace]">{z.affectedPopulation.toLocaleString()}</td>
+                    <td className="py-2.5 px-2 font-['JetBrains_Mono',monospace] text-[#dc2626] font-semibold">{z.medicalUrgencyCases}</td>
+                    <td className="py-2.5 px-2">
+                      <span className={`px-2 py-0.5 rounded-[2px] font-['JetBrains_Mono',monospace] text-[11px] font-bold ${
+                        z.severityScore >= 80 ? 'bg-[#fee2e2] text-[#dc2626]' :
+                        z.severityScore >= 60 ? 'bg-[#fef3c7] text-[#b45309]' :
+                        'bg-[#dcfce7] text-[#15803d]'
+                      }`}>
+                        {z.severityScore}/100
+                      </span>
+                    </td>
+                    <td className="py-2.5 px-2 text-right">
+                      <button
+                        onClick={() => {
+                          setSelectedZone(z);
+                          setActiveTab('allocation-planner');
+                        }}
+                        className="px-2.5 py-1 bg-[#f1f5f9] hover:bg-[#004ac6] hover:text-white text-[#0f172a] rounded-[2px] font-['JetBrains_Mono',monospace] text-[11px] font-bold transition-colors cursor-pointer border border-[#cbd5e1]"
+                      >
+                        Allocate
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        {/* Right: Quick Command Actions (col-span-5) */}
+        <div className="lg:col-span-5 space-y-3">
+          <div className="bg-white border border-[#e2e8f0] rounded-[4px] p-4 shadow-xs space-y-3">
+            <h4 className="font-['Outfit',sans-serif] text-sm font-bold text-[#0f172a] uppercase tracking-wider">
+              Emergency Command Directives
+            </h4>
+
             <button
               onClick={() => setActiveTab('allocation-planner')}
-              className="px-3 py-1.5 bg-primary hover:bg-primary-container text-on-primary text-[10px] font-bold rounded-lg transition-colors cursor-pointer"
+              className="w-full py-2.5 px-3 bg-[#f8fafc] hover:bg-[#f1f5f9] border border-[#e2e8f0] rounded-[4px] text-xs font-semibold text-[#0f172a] flex items-center justify-between transition-colors cursor-pointer"
             >
-              Allocate Resources →
-            </button>
-          </div>
-        </div>
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-          {governmentResources.filter(r => r.remaining > 0).slice(0, 6).map((res) => {
-            const pct = res.totalAvailable > 0 ? Math.round((res.allocated / res.totalAvailable) * 100) : 0;
-            return (
-              <div 
-                key={res.id} 
-                className="border border-outline-variant/50 rounded-lg p-2.5 hover:bg-surface-container-low transition-colors cursor-pointer"
-                onClick={() => setActiveTab('asset-inventory')}
-              >
-                <div className="text-[10px] font-bold text-primary truncate mb-1">{res.name.split('(')[0].trim()}</div>
-                <div className="text-sm font-black font-mono text-on-surface">
-                  {res.remaining.toLocaleString()} <span className="text-[9px] font-normal text-on-surface-variant">{res.unit}</span>
-                </div>
-                <div className="mt-1.5 flex items-center gap-1.5">
-                  <div className="flex-1 h-1 bg-outline-variant/30 rounded-full overflow-hidden">
-                    <div 
-                      className={`h-full rounded-full ${pct > 75 ? 'bg-error' : pct > 40 ? 'bg-amber-500' : 'bg-green-500'}`}
-                      style={{ width: `${Math.min(pct, 100)}%` }}
-                    />
-                  </div>
-                  <span className="text-[9px] font-mono text-on-surface-variant">{pct}%</span>
-                </div>
-                {res.inTransit > 0 && (
-                  <div className="text-[9px] text-blue-600 font-mono mt-1">↗ {res.inTransit} in transit</div>
-                )}
+              <div className="flex items-center gap-2">
+                <span className="material-symbols-outlined text-[#004ac6] text-sm">calculate</span>
+                <span>Run RADS Marginal Utility Algorithm</span>
               </div>
-            );
-          })}
-        </div>
-      </div>
+              <span className="material-symbols-outlined text-sm text-[#475569]">chevron_right</span>
+            </button>
 
-      {/* 4. Full-Width Tactical Map */}
-      <div className="w-full space-y-3">
-        <GisMap height="500px" />
-        <SimulationController />
-      </div>
-
-      {/* 5. District Priority Ranking & Resource Deficit Register Table */}
-      <div className="bg-surface border border-outline-variant rounded-xl p-4 space-y-3 shadow-xs">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-outline-variant pb-2">
-          <div>
-            <div className="text-[10px] font-bold tracking-wider text-on-surface-variant uppercase font-mono">
-              SECTOR TRIAGE REGISTER
-            </div>
-            <h3 className="text-sm font-bold text-primary font-heading">
-              District Priority Ranking & Resource Deficits
-            </h3>
-          </div>
-
-          <div className="flex items-center gap-2">
             <button
-              onClick={() => setActiveTab('region-assessment')}
-              className="text-xs font-semibold text-primary hover:underline flex items-center gap-1 cursor-pointer font-mono"
+              onClick={() => setActiveTab('logistics-tracker')}
+              className="w-full py-2.5 px-3 bg-[#f8fafc] hover:bg-[#f1f5f9] border border-[#e2e8f0] rounded-[4px] text-xs font-semibold text-[#0f172a] flex items-center justify-between transition-colors cursor-pointer"
             >
-              <span>Open Needs Assessment Matrix</span>
-              <ArrowUpRight className="w-3.5 h-3.5" />
+              <div className="flex items-center gap-2">
+                <span className="material-symbols-outlined text-[#006780] text-sm">local_shipping</span>
+                <span>Track Relief Supply Convoys</span>
+              </div>
+              <span className="material-symbols-outlined text-sm text-[#475569]">chevron_right</span>
+            </button>
+
+            <button
+              onClick={() => setActiveTab('incident-intelligence')}
+              className="w-full py-2.5 px-3 bg-[#f8fafc] hover:bg-[#f1f5f9] border border-[#e2e8f0] rounded-[4px] text-xs font-semibold text-[#0f172a] flex items-center justify-between transition-colors cursor-pointer"
+            >
+              <div className="flex items-center gap-2">
+                <span className="material-symbols-outlined text-[#d97706] text-sm">campaign</span>
+                <span>Triage Field Hazard Incident Reports</span>
+              </div>
+              <span className="material-symbols-outlined text-sm text-[#475569]">chevron_right</span>
+            </button>
+
+            <button
+              onClick={() => setActiveTab('reports-audit')}
+              className="w-full py-2.5 px-3 bg-[#f8fafc] hover:bg-[#f1f5f9] border border-[#e2e8f0] rounded-[4px] text-xs font-semibold text-[#0f172a] flex items-center justify-between transition-colors cursor-pointer"
+            >
+              <div className="flex items-center gap-2">
+                <span className="material-symbols-outlined text-[#059669] text-sm">verified</span>
+                <span>Generate Official SITREP Audit Report</span>
+              </div>
+              <span className="material-symbols-outlined text-sm text-[#475569]">chevron_right</span>
             </button>
           </div>
         </div>
 
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs border-collapse font-body-sm">
-            <thead>
-              <tr className="bg-surface-container text-on-surface-variant font-label-sm text-label-sm border-b border-outline-variant">
-                <th className="py-2.5 px-3">Priority</th>
-                <th className="py-2.5 px-3">Location / Ward</th>
-                <th className="py-2.5 px-3">Circle Block</th>
-                <th className="py-2.5 px-3 text-right">Severity Index</th>
-                <th className="py-2.5 px-3 text-right">Affected Pop</th>
-                <th className="py-2.5 px-3">Road Status</th>
-                <th className="py-2.5 px-3 text-right">Water Deficit</th>
-                <th className="py-2.5 px-3">Primary Need</th>
-                <th className="py-2.5 px-3">Deterioration</th>
-                <th className="py-2.5 px-3 text-center">Action</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-outline-variant/60">
-              {zones.slice(0, 6).map((zone) => (
-                <tr 
-                  key={zone.id} 
-                  className="hover:bg-surface-container-low cursor-pointer transition-colors"
-                  onClick={() => {
-                    setSelectedZone(zone);
-                    setActiveTab('region-assessment');
-                  }}
-                >
-                  <td className="py-2.5 px-3 font-bold text-primary font-mono">
-                    #{zone.priorityRank.toString().padStart(2, '0')}
-                  </td>
-                  <td className="py-2.5 px-3 font-bold text-primary">
-                    {zone.name} ({zone.code})
-                  </td>
-                  <td className="py-2.5 px-3 text-on-surface-variant text-xs">
-                    {zone.blockName}
-                  </td>
-                  <td className="py-2.5 px-3 text-right font-bold font-mono text-error">
-                    {zone.severityScore} / 100
-                  </td>
-                  <td className="py-2.5 px-3 text-right font-mono text-on-surface">
-                    {zone.affectedPopulation.toLocaleString()}
-                  </td>
-                  <td className="py-2.5 px-3">
-                    <span className={`px-2 py-0.5 rounded text-[10px] font-bold font-mono ${
-                      zone.roadAccessStatus === 'BLOCKED' ? 'bg-error-container text-on-error-container' :
-                      zone.roadAccessStatus === 'RESTRICTED' ? 'bg-amber-100 text-amber-800' :
-                      'bg-green-100 text-green-800'
-                    }`}>
-                      {zone.roadAccessStatus}
-                    </span>
-                  </td>
-                  <td className="py-2.5 px-3 text-right font-mono font-bold text-error">
-                    {zone.waterDeficitLiters.toLocaleString()} L
-                  </td>
-                  <td className="py-2.5 px-3 text-xs font-semibold text-primary">
-                    {zone.topNeeds[0]}
-                  </td>
-                  <td className="py-2.5 px-3">
-                    <span className="text-[10px] font-bold font-mono text-on-surface-variant">
-                      {zone.deteriorationTrend}
-                    </span>
-                  </td>
-                  <td className="py-2.5 px-3 text-center">
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setSelectedZone(zone);
-                        setActiveTab('region-assessment');
-                      }}
-                      className="px-2.5 py-1 bg-primary hover:bg-primary-container text-on-primary text-[10px] font-bold rounded transition-colors cursor-pointer"
-                    >
-                      Assess Needs →
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
       </div>
 
     </div>

@@ -1,20 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { useDisaster } from '../../context/DisasterContext';
-import { 
-  Shield, 
-  Radio, 
-  CheckCircle2, 
-  MapPin, 
-  Megaphone, 
-  Phone, 
-  Navigation, 
-  ArrowRight,
-  AlertTriangle,
-  ChevronRight,
-  LifeBuoy,
-  Layers
-} from 'lucide-react';
 
 export const CitizenHomeView: React.FC = () => {
   const { 
@@ -24,279 +10,268 @@ export const CitizenHomeView: React.FC = () => {
     citizenSOSTickets
   } = useDisaster();
 
-  const [citizenStatus, setCitizenStatus] = useState<'SAFE' | 'NEED_HELP' | 'EVACUATED'>('SAFE');
-
+  const [isSafe, setIsSafe] = useState(true);
   const containerRef = useRef<HTMLDivElement>(null);
-  const sosButtonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     if (containerRef.current) {
       gsap.fromTo(
         containerRef.current,
         { opacity: 0, y: 15 },
-        { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' }
+        { opacity: 1, y: 0, duration: 0.4, ease: 'power2.out' }
       );
     }
   }, []);
 
-  // Nearest Shelter derived from location
-  const nearestShelter = shelterNodes[0];
-
-  const handleUpdateStatus = (newStatus: 'SAFE' | 'NEED_HELP' | 'EVACUATED') => {
-    setCitizenStatus(newStatus);
+  const nearestShelter = shelterNodes[0] || {
+    name: 'Pandu Relief Camp #1',
+    currentOccupancy: 742,
+    totalBedCapacity: 850,
+    contactPhone: '+91 94350-88123'
   };
 
-  const handleTriggerQuickSOS = () => {
-    setActiveTab('citizen-need-help');
-  };
+  const availableBeds = nearestShelter.totalBedCapacity - nearestShelter.currentOccupancy;
 
   return (
-    <div ref={containerRef} className="max-w-2xl mx-auto space-y-5 pb-16 font-body-md">
-      {/* Top Bar for Citizen Portal */}
-      <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex items-center justify-between shadow-xl">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400">
-            <Shield size={20} />
-          </div>
+    <div ref={containerRef} className="bg-[#f8fafc] text-[#0f172a] font-['Inter',sans-serif] min-h-screen pb-16 selection:bg-[#dbeafe] selection:text-[#1e3a8a]">
+      {/* Broadcast Alert Banner */}
+      <div className="bg-[#fef3c7] border-b border-[#fcd34d] px-4 sm:px-8 py-3 flex items-start justify-between gap-3 shadow-xs">
+        <div className="flex items-start gap-3">
+          <span 
+            className="material-symbols-outlined text-[#b45309] mt-0.5" 
+            style={{ fontVariationSettings: "'FILL' 1" }}
+          >
+            warning
+          </span>
           <div>
-            <div className="flex items-center gap-2">
-              <h1 className="text-sm font-extrabold text-white">ReliefGrid Citizen</h1>
-              <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 text-[10px] font-bold border border-emerald-500/20">
-                Live Telemetry Active
-              </span>
-            </div>
-            <p className="text-[11px] text-slate-400">
-              Guwahati Metro • Kamrup District Zone
+            <h3 className="text-sm font-bold text-[#78350f]">
+              URGENT: Flash Flood & River Inundation Advisory
+            </h3>
+            <p className="text-xs text-[#92400e] mt-0.5">
+              High water discharge alert in Brahmaputra basin. Seek verified shelter hubs in Kamrup Metro immediately.
             </p>
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => setActiveTab('citizen-requests')}
-            className="relative p-2 rounded-xl bg-slate-800 hover:bg-slate-750 text-slate-300 transition-colors cursor-pointer border border-slate-700/60"
-            title="My Rescue Requests"
-          >
-            <LifeBuoy size={17} />
-            {citizenSOSTickets.length > 0 && (
-              <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-amber-500 text-slate-950 text-[10px] font-black flex items-center justify-center">
-                {citizenSOSTickets.length}
-              </span>
-            )}
-          </button>
-          <button
-            onClick={() => setActiveTab('role-selection')}
-            className="flex items-center gap-1 text-[11px] font-bold text-slate-400 hover:text-white bg-slate-800 px-3 py-1.5 rounded-xl border border-slate-700/60 transition-colors cursor-pointer"
-          >
-            <Layers size={13} />
-            <span className="hidden sm:inline">Switch Role</span>
-          </button>
-        </div>
+        <button 
+          onClick={() => setActiveTab('citizen-find-safety')}
+          className="text-xs font-['JetBrains_Mono',monospace] font-bold text-[#b45309] underline hover:text-[#78350f] cursor-pointer whitespace-nowrap"
+        >
+          View Map →
+        </button>
       </div>
 
-      {/* Official Government Emergency Alert */}
-      <div 
-        onClick={() => setActiveTab('citizen-find-safety')}
-        className="bg-gradient-to-r from-red-950/60 via-red-900/40 to-slate-900 border border-red-800/60 rounded-2xl p-4 flex items-center justify-between cursor-pointer hover:border-red-600 transition-all shadow-lg shadow-red-950/20 group"
-      >
-        <div className="flex items-center gap-3.5">
-          <div className="w-9 h-9 rounded-xl bg-red-600/20 border border-red-500/40 flex items-center justify-center text-red-400 shrink-0 group-hover:scale-105 transition-transform">
-            <AlertTriangle size={18} className="animate-pulse" />
-          </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="text-[10px] font-black uppercase tracking-wider text-red-400 bg-red-950 px-2 py-0.5 rounded border border-red-800">
-                OFFICIAL DDMA ADVISORY
-              </span>
-              <span className="text-[10px] text-slate-400">Issued 15m ago</span>
+      <div className="p-4 sm:p-8 max-w-5xl mx-auto space-y-6">
+        
+        {/* Top Citizen Header Strip */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-4 rounded-[4px] border border-[#e2e8f0] shadow-xs">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-[4px] bg-[#dbeafe] text-[#2563eb] flex items-center justify-center font-extrabold text-base">
+              <span className="material-symbols-outlined">person</span>
             </div>
-            <h2 className="text-xs font-bold text-white mt-1 group-hover:text-red-200 transition-colors">
-              Brahmaputra Rising — Evacuate Low-lying Pandu & Maligaon Sectors
-            </h2>
-            <p className="text-[11px] text-slate-300 mt-0.5">
-              High schools and designated shelter camps #1, #2, #4 are operational with dry rations.
-            </p>
-          </div>
-        </div>
-        <ChevronRight size={18} className="text-slate-400 group-hover:text-white group-hover:translate-x-1 transition-all shrink-0" />
-      </div>
-
-      {/* Primary SOS "GET HELP" Button */}
-      <button
-        ref={sosButtonRef}
-        onClick={handleTriggerQuickSOS}
-        className="w-full relative overflow-hidden bg-gradient-to-br from-red-600 via-red-700 to-rose-900 hover:from-red-500 hover:to-rose-800 rounded-3xl p-6 text-white text-left shadow-2xl shadow-red-700/30 border border-red-400/30 cursor-pointer transition-all duration-300 group active:scale-[0.99]"
-      >
-        {/* Animated Radial Pulse Rings */}
-        <div className="absolute -right-8 -top-8 w-44 h-44 rounded-full bg-red-400/10 blur-2xl group-hover:bg-red-400/20 transition-all pointer-events-none" />
-        <div className="absolute right-6 top-6 w-14 h-14 rounded-full bg-white/10 flex items-center justify-center text-white/90 group-hover:scale-110 group-hover:rotate-12 transition-all">
-          <Radio size={28} className="animate-pulse" />
-        </div>
-
-        <div className="relative z-10 max-w-md">
-          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-black/30 backdrop-blur-md text-[10px] font-extrabold uppercase tracking-widest text-red-200 mb-2">
-            <span className="w-2 h-2 rounded-full bg-white animate-ping" />
-            Emergency SOS Beacon
-          </div>
-          <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-white flex items-center gap-2">
-            <span>GET EMERGENCY HELP</span>
-            <ArrowRight size={24} className="group-hover:translate-x-2 transition-transform" />
-          </h2>
-          <p className="text-xs sm:text-sm text-red-100/90 font-medium mt-1">
-            Medical Airlift • Flood Inundation Rescue • Food & Potable Water • SDRF Boat Dispatch
-          </p>
-          <div className="mt-3 flex items-center gap-2 text-[11px] text-red-200/80">
-            <MapPin size={13} />
-            <span>GPS location auto-shared directly with DEOC control room</span>
-          </div>
-        </div>
-      </button>
-
-      {/* Near You / Safe Places Widget */}
-      <section className="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl space-y-3">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <MapPin size={15} className="text-amber-400" />
-            <span className="text-xs font-extrabold text-white uppercase tracking-wider">
-              Verified Relief Near You
-            </span>
-          </div>
-          <button
-            onClick={() => setActiveTab('citizen-find-safety')}
-            className="text-[11px] font-bold text-amber-400 hover:text-amber-300 flex items-center gap-1 cursor-pointer"
-          >
-            <span>View Interactive Safety Map</span>
-            <ChevronRight size={13} />
-          </button>
-        </div>
-
-        {nearestShelter ? (
-          <div className="bg-slate-950 border border-slate-800/80 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-            <div className="space-y-1">
+            <div>
               <div className="flex items-center gap-2">
-                <span className="px-2 py-0.5 rounded bg-purple-500/10 border border-purple-500/20 text-purple-400 text-[10px] font-bold">
-                  Primary Shelter
-                </span>
-                <span className="px-2 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-bold">
-                  Open & Operational
+                <h1 className="font-['Outfit',sans-serif] text-lg font-bold text-[#0f172a]">
+                  {citizenUser?.name || 'Rahul Kalita'}
+                </h1>
+                <span className="px-2 py-0.5 rounded-[4px] bg-[#dcfce7] text-[#15803d] font-['JetBrains_Mono',monospace] text-[10px] font-bold border border-[#bbf7d0]">
+                  GPS SYNCHRONIZED
                 </span>
               </div>
-              <h4 className="text-sm font-bold text-white">
-                {nearestShelter.name}
-              </h4>
-              <p className="text-[11px] text-slate-400">
-                {nearestShelter.address} • <strong className="text-purple-300">{nearestShelter.totalBedCapacity - nearestShelter.currentOccupancy} beds available</strong>
+              <p className="font-['JetBrains_Mono',monospace] text-xs text-[#475569]">
+                {citizenUser?.phone || '+91 98640-12345'} • Kamrup Metro Sector
               </p>
             </div>
-
-            <div className="flex items-center gap-2 shrink-0">
-              <a
-                href={`tel:${nearestShelter.contactPhone}`}
-                className="flex-1 sm:flex-initial flex items-center justify-center gap-1.5 px-3 py-2 bg-slate-800 hover:bg-slate-750 text-white rounded-xl text-xs font-bold transition-colors border border-slate-700"
-              >
-                <Phone size={13} />
-                <span>Call Center</span>
-              </a>
-              <button
-                onClick={() => setActiveTab('citizen-find-safety')}
-                className="flex-1 sm:flex-initial flex items-center justify-center gap-1.5 px-3 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 rounded-xl text-xs font-bold transition-colors shadow-md shadow-amber-500/10 cursor-pointer"
-              >
-                <Navigation size={13} />
-                <span>Directions</span>
-              </button>
-            </div>
           </div>
-        ) : (
-          <div className="text-xs text-slate-500 py-3 text-center">
-            Fetching nearby relief shelters…
-          </div>
-        )}
-      </section>
 
-      {/* Two Column Quick Actions */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        {/* I'm Safe Status Toggle */}
-        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex flex-col justify-between shadow-xl">
-          <div className="flex items-center gap-2 mb-2">
-            <CheckCircle2 size={16} className={citizenStatus === 'SAFE' ? 'text-emerald-400' : 'text-slate-400'} />
-            <span className="text-xs font-bold text-white">Citizen Welfare Status</span>
-          </div>
-          <p className="text-[11px] text-slate-400 mb-3">
-            Notify rescue authorities and relatives that you are in a safe location.
-          </p>
-
-          <div className="flex gap-2">
+          <div className="flex items-center gap-2">
             <button
-              onClick={() => handleUpdateStatus('SAFE')}
-              className={`flex-1 py-2 px-3 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
-                citizenStatus === 'SAFE'
-                  ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-600/20'
-                  : 'bg-slate-950 text-slate-400 hover:text-white border border-slate-800'
-              }`}
+              onClick={() => setActiveTab('citizen-requests')}
+              className="px-3 py-1.5 rounded-[4px] bg-[#f1f5f9] hover:bg-[#e2e8f0] text-xs font-semibold text-[#0f172a] border border-[#cbd5e1] flex items-center gap-1.5 transition-colors cursor-pointer"
             >
-              <CheckCircle2 size={13} />
-              <span>I'm Safe</span>
-            </button>
-            <button
-              onClick={() => handleUpdateStatus('NEED_HELP')}
-              className={`flex-1 py-2 px-3 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
-                citizenStatus === 'NEED_HELP'
-                  ? 'bg-red-600 text-white shadow-lg shadow-red-600/20'
-                  : 'bg-slate-950 text-slate-400 hover:text-white border border-slate-800'
-              }`}
-            >
-              <AlertTriangle size={13} />
-              <span>Need Help</span>
+              <span className="material-symbols-outlined text-sm">track_changes</span>
+              <span>My Requests ({citizenSOSTickets.length})</span>
             </button>
           </div>
         </div>
 
-        {/* Report a Hazard */}
-        <div 
-          onClick={() => setActiveTab('citizen-report')}
-          className="bg-slate-900 border border-slate-800 hover:border-blue-500/50 rounded-2xl p-4 flex flex-col justify-between shadow-xl cursor-pointer group transition-all"
-        >
-          <div>
-            <div className="flex items-center justify-between mb-2">
-              <div className="flex items-center gap-2">
-                <Megaphone size={16} className="text-blue-400" />
-                <span className="text-xs font-bold text-white">Report Hazard / Breach</span>
+        {/* Hero / Critical Action Area */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          
+          {/* SOS Action Card */}
+          <div className="lg:col-span-8 bg-white border border-[#e2e8f0] rounded-[4px] p-6 sm:p-8 flex flex-col items-center justify-center min-h-[300px] relative overflow-hidden shadow-xs">
+            <div className="z-10 text-center mb-6 w-full flex justify-between items-start">
+              <div className="font-['JetBrains_Mono',monospace] text-xs font-semibold text-[#475569] bg-[#f8fafc] px-2.5 py-1 rounded-[4px] border border-[#cbd5e1] shadow-xs">
+                SYS.STATUS: OPERATIONAL
               </div>
-              <ChevronRight size={15} className="text-slate-500 group-hover:text-white group-hover:translate-x-1 transition-all" />
+              <div className="flex items-center gap-2 bg-[#f8fafc] px-2.5 py-1 rounded-[4px] border border-[#cbd5e1] shadow-xs">
+                <span className="w-2 h-2 rounded-full bg-[#0284c7] animate-pulse"></span>
+                <span className="font-['JetBrains_Mono',monospace] text-xs font-bold text-[#0284c7]">
+                  GPS LOCK: 26.1582° N, 91.6795° E
+                </span>
+              </div>
             </div>
-            <p className="text-[11px] text-slate-400">
-              Report submerged roads, broken levees, fire, or landslides with GPS photos and voice notes.
+
+            {/* Glowing Big SOS Button */}
+            <div className="relative z-10 w-44 h-44 flex items-center justify-center cursor-pointer group my-2">
+              <button 
+                onClick={() => setActiveTab('citizen-need-help')}
+                className="w-32 h-32 rounded-[16px] bg-[#dc2626] hover:bg-[#b91c1c] text-white font-['Outfit',sans-serif] text-3xl font-extrabold shadow-[0_8px_24px_rgba(220,38,38,0.4)] flex flex-col items-center justify-center z-20 group-active:scale-95 transition-all duration-150 border-4 border-white cursor-pointer"
+              >
+                <span>SOS</span>
+                <span className="font-['JetBrains_Mono',monospace] text-[10px] uppercase font-bold tracking-wider mt-1 opacity-90">
+                  Tap For Help
+                </span>
+              </button>
+            </div>
+
+            <p className="mt-6 font-['Inter',sans-serif] text-xs text-[#475569] text-center max-w-md z-10 bg-[#f8fafc] px-4 py-2 rounded-[4px] border border-[#e2e8f0]">
+              Broadcasts immediate rescue coordinates to NDRF Swift Water units and the nearest relief camp coordinator.
             </p>
           </div>
 
-          <div className="mt-3 inline-flex items-center gap-1.5 text-xs font-bold text-blue-400 group-hover:text-blue-300">
-            <span>Submit Citizen Field Report</span>
-            <ArrowRight size={13} />
+          {/* Right Column: Status & Safety */}
+          <div className="lg:col-span-4 flex flex-col gap-6">
+            
+            {/* Safety Status Toggle */}
+            <div className="bg-white border border-[#e2e8f0] rounded-[4px] p-6 relative overflow-hidden shadow-xs">
+              <div className="absolute top-0 left-0 bg-[#e0f2fe] px-3 py-1 rounded-br-[4px] border-b border-r border-[#0284c7]/20">
+                <span className="font-['JetBrains_Mono',monospace] text-[10px] font-bold text-[#0c4a6e] uppercase tracking-wider">
+                  Personal Status
+                </span>
+              </div>
+
+              <div className="mt-6 flex flex-col items-center justify-center text-center">
+                <span 
+                  className="material-symbols-outlined text-4xl text-[#0284c7] mb-2" 
+                  style={{ fontVariationSettings: "'FILL' 1" }}
+                >
+                  health_and_safety
+                </span>
+                <h2 className="font-['Outfit',sans-serif] text-lg font-bold text-[#0f172a] mb-1">
+                  Welfare Check-In
+                </h2>
+                <p className="text-xs text-[#475569] mb-4">
+                  Mark yourself as safe to notify family and local disaster authorities.
+                </p>
+
+                <button
+                  type="button"
+                  onClick={() => setIsSafe(!isSafe)}
+                  className={`w-full py-2.5 px-4 rounded-[4px] font-['JetBrains_Mono',monospace] text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer border ${
+                    isSafe 
+                      ? 'bg-[#dcfce7] text-[#15803d] border-[#86efac]' 
+                      : 'bg-[#fee2e2] text-[#dc2626] border-[#fca5a5]'
+                  }`}
+                >
+                  <span className="material-symbols-outlined text-sm">
+                    {isSafe ? 'check_circle' : 'warning'}
+                  </span>
+                  <span>{isSafe ? "STATUS: I AM SAFE" : "STATUS: NEED ASSISTANCE"}</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Nearest Shelter Card */}
+            <div className="bg-white border border-[#e2e8f0] rounded-[4px] p-5 shadow-xs space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="font-['JetBrains_Mono',monospace] text-[10px] font-bold text-[#475569] uppercase tracking-wider">
+                  Nearest Relief Hub
+                </span>
+                <span className="px-2 py-0.5 bg-[#dcfce7] text-[#15803d] font-['JetBrains_Mono',monospace] text-[10px] font-bold rounded-[2px]">
+                  {availableBeds} Beds Free
+                </span>
+              </div>
+
+              <div>
+                <h4 className="font-['Outfit',sans-serif] text-sm font-bold text-[#0f172a]">
+                  {nearestShelter.name}
+                </h4>
+                <p className="font-['JetBrains_Mono',monospace] text-xs text-[#0284c7] mt-0.5">
+                  1.2 km away • Incharge: {nearestShelter.contactPhone}
+                </p>
+              </div>
+
+              <button
+                onClick={() => setActiveTab('citizen-find-safety')}
+                className="w-full py-2 bg-[#2563eb] hover:bg-[#1d4ed8] text-white font-['JetBrains_Mono',monospace] text-xs font-bold rounded-[4px] transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
+              >
+                <span className="material-symbols-outlined text-sm">directions</span>
+                <span>Get Safe Route</span>
+              </button>
+            </div>
+
           </div>
         </div>
-      </div>
 
-      {/* Account / Location Strip */}
-      <div className="bg-slate-950/80 border border-slate-800/80 rounded-xl p-3 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-slate-400">
-        <div className="flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full bg-emerald-400" />
-          <span>Signed in as <strong className="text-white">{citizenUser?.name || 'Citizen User'}</strong> ({citizenUser?.phone || '+91 98640-12345'})</span>
-        </div>
-        <div className="flex items-center gap-3">
+        {/* 4 Core Quick Services Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <button
+            onClick={() => setActiveTab('citizen-find-safety')}
+            className="bg-white border border-[#e2e8f0] hover:border-[#2563eb] rounded-[4px] p-4 text-left shadow-xs transition-all flex flex-col justify-between space-y-3 cursor-pointer group"
+          >
+            <div className="w-9 h-9 rounded-[4px] bg-[#dbeafe] text-[#2563eb] flex items-center justify-center group-hover:scale-105 transition-transform">
+              <span className="material-symbols-outlined">explore</span>
+            </div>
+            <div>
+              <h4 className="font-['Outfit',sans-serif] text-sm font-bold text-[#0f172a]">Verified Safe Zones</h4>
+              <p className="text-xs text-[#475569] mt-0.5">Find food, medical & bed hubs on Leaflet map</p>
+            </div>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('missing-persons')}
+            className="bg-white border border-[#e2e8f0] hover:border-[#2563eb] rounded-[4px] p-4 text-left shadow-xs transition-all flex flex-col justify-between space-y-3 cursor-pointer group"
+          >
+            <div className="w-9 h-9 rounded-[4px] bg-[#f3e8ff] text-[#7e22ce] flex items-center justify-center group-hover:scale-105 transition-transform">
+              <span className="material-symbols-outlined">person_search</span>
+            </div>
+            <div>
+              <h4 className="font-['Outfit',sans-serif] text-sm font-bold text-[#0f172a]">Find Family Members</h4>
+              <p className="text-xs text-[#475569] mt-0.5">Cross-check shelter resident logs in real time</p>
+            </div>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('citizen-report')}
+            className="bg-white border border-[#e2e8f0] hover:border-[#2563eb] rounded-[4px] p-4 text-left shadow-xs transition-all flex flex-col justify-between space-y-3 cursor-pointer group"
+          >
+            <div className="w-9 h-9 rounded-[4px] bg-[#ffedd5] text-[#c2410c] flex items-center justify-center group-hover:scale-105 transition-transform">
+              <span className="material-symbols-outlined">report_problem</span>
+            </div>
+            <div>
+              <h4 className="font-['Outfit',sans-serif] text-sm font-bold text-[#0f172a]">Report Field Hazard</h4>
+              <p className="text-xs text-[#475569] mt-0.5">4-step wizard to report road cuts & breaches</p>
+            </div>
+          </button>
+
           <button
             onClick={() => setActiveTab('citizen-requests')}
-            className="text-amber-400 hover:underline font-bold cursor-pointer"
+            className="bg-white border border-[#e2e8f0] hover:border-[#2563eb] rounded-[4px] p-4 text-left shadow-xs transition-all flex flex-col justify-between space-y-3 cursor-pointer group"
           >
-            My Open Requests ({citizenSOSTickets.length})
-          </button>
-          <span>•</span>
-          <button
-            onClick={() => setActiveTab('role-selection')}
-            className="text-slate-400 hover:text-slate-200 cursor-pointer"
-          >
-            Sign Out
+            <div className="w-9 h-9 rounded-[4px] bg-[#ecfdf5] text-[#059669] flex items-center justify-center group-hover:scale-105 transition-transform">
+              <span className="material-symbols-outlined">track_changes</span>
+            </div>
+            <div>
+              <h4 className="font-['Outfit',sans-serif] text-sm font-bold text-[#0f172a]">Rescue Progression</h4>
+              <p className="text-xs text-[#475569] mt-0.5">Track dispatched boat ETA & tactical units</p>
+            </div>
           </button>
         </div>
+
+        {/* Emergency Helpline Strip */}
+        <div className="bg-white border border-[#e2e8f0] rounded-[4px] p-4 flex flex-wrap items-center justify-between gap-3 text-xs shadow-xs">
+          <div className="flex items-center gap-2 text-[#475569]">
+            <span className="material-symbols-outlined text-[#dc2626]">call</span>
+            <span className="font-bold">Official 24/7 Helplines:</span>
+          </div>
+          <div className="flex items-center gap-4 font-['JetBrains_Mono',monospace] font-bold text-[#0f172a]">
+            <span>State EOC: <strong className="text-[#2563eb]">1070</strong></span>
+            <span>District: <strong className="text-[#b45309]">1077</strong></span>
+            <span>Emergency Services: <strong className="text-[#dc2626]">112</strong></span>
+          </div>
+        </div>
+
       </div>
     </div>
   );
