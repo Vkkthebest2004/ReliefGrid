@@ -1,302 +1,343 @@
-import React, { useEffect, useRef } from 'react';
-import gsap from 'gsap';
+import React, { useState } from 'react';
 import { useDisaster } from '../context/DisasterContext';
-import { 
-  Shield, 
-  Building2, 
-  Home, 
-  ArrowRight, 
-  Radio, 
-  CheckCircle2, 
-  ArrowLeft
-} from 'lucide-react';
+import type { UserRole } from '../types';
 
 export const RoleSelectionView: React.FC = () => {
-  const { setActiveTab, selectRole, loginAsOfficer, loginAsShelterCoordinator, loginAsCitizen } = useDisaster();
-  const containerRef = useRef<HTMLDivElement>(null);
-  const cardsRef = useRef<HTMLDivElement>(null);
+  const { 
+    setActiveTab, 
+    loginAsOfficer, 
+    loginAsShelterCoordinator, 
+    loginAsCitizen,
+    shelterNodes
+  } = useDisaster();
 
-  useEffect(() => {
-    if (cardsRef.current) {
-      const cards = cardsRef.current.children;
-      gsap.fromTo(
-        cards,
-        { opacity: 0, y: 35, scale: 0.95 },
-        { 
-          opacity: 1, 
-          y: 0, 
-          scale: 1, 
-          duration: 0.6, 
-          stagger: 0.12, 
-          ease: 'back.out(1.4)' 
-        }
-      );
-    }
-  }, []);
+  const [selectedRole, setSelectedRole] = useState<UserRole>('OFFICER');
+  
+  // Officer state
+  const [badgeId, setBadgeId] = useState('OP-7402');
+  const [passcode, setPasscode] = useState('849201');
 
-  const handleSelectRole = (role: 'OFFICER' | 'SHELTER_COORDINATOR' | 'CITIZEN') => {
-    selectRole(role);
-    if (role === 'OFFICER') {
-      setActiveTab('secure-login');
-    } else if (role === 'SHELTER_COORDINATOR') {
-      setActiveTab('shelter-auth');
-    } else {
-      setActiveTab('citizen-auth');
-    }
-  };
+  // Shelter state
+  const [selectedShelterId, setSelectedShelterId] = useState('SH-GHY-001');
 
-  const handleQuickDemo = (role: 'OFFICER' | 'SHELTER_COORDINATOR' | 'CITIZEN') => {
-    if (role === 'OFFICER') {
-      loginAsOfficer('AS-DDMA-7402');
+  // Citizen state
+  const [citizenName, setCitizenName] = useState('Rahul Kalita');
+  const [citizenPhone, setCitizenPhone] = useState('+91 98640-12345');
+
+  const handleInitializeSession = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    if (selectedRole === 'OFFICER') {
+      loginAsOfficer(badgeId || 'OP-7402');
       setActiveTab('command-center');
-    } else if (role === 'SHELTER_COORDINATOR') {
-      loginAsShelterCoordinator('SH-GHY-001');
+    } else if (selectedRole === 'SHELTER_COORDINATOR') {
+      const shelter = shelterNodes.find(s => s.id === selectedShelterId) || shelterNodes[0];
+      loginAsShelterCoordinator(selectedShelterId, shelter?.officerInCharge || 'Maj. Vikramjit Saikia');
       setActiveTab('shelter-dashboard');
     } else {
-      loginAsCitizen('Citizen User', '+91 98765-43210');
+      loginAsCitizen(citizenName || 'Citizen User', citizenPhone || '+91 98640-12345');
       setActiveTab('citizen-home');
     }
   };
 
+  const handleFastSOS = () => {
+    loginAsCitizen('Emergency Guest', '+91 98640-SOS01');
+    setActiveTab('citizen-need-help');
+  };
+
   return (
-    <div ref={containerRef} className="min-h-screen bg-slate-950 text-slate-100 flex flex-col justify-between p-4 sm:p-6 lg:p-10 relative overflow-hidden font-body-md">
-      {/* Dynamic Background Glows */}
-      <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-10 right-1/4 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-sky-500/5 rounded-full blur-3xl pointer-events-none" />
-
-      {/* Top Government Strip & Back Navigation */}
-      <header className="max-w-6xl mx-auto w-full flex items-center justify-between z-10">
-        <button
+    <div className="bg-[#f7f9fb] text-[#0F172A] min-h-screen flex flex-col font-['Inter',sans-serif] select-none">
+      {/* TopAppBar */}
+      <header className="bg-white w-full top-0 sticky border-b border-[#E2E8F0] shadow-xs flex items-center justify-between px-4 sm:px-8 py-3.5 max-w-full z-50">
+        <div 
           onClick={() => setActiveTab('official-portal')}
-          className="flex items-center gap-2 text-xs font-semibold text-slate-400 hover:text-slate-200 bg-slate-900/80 hover:bg-slate-850 px-3 py-1.5 rounded-lg border border-slate-800 transition-all cursor-pointer"
+          className="flex items-center space-x-3 cursor-pointer hover:bg-[#f2f4f6] transition-colors rounded-[4px] p-1 active:scale-95 duration-150"
         >
-          <ArrowLeft size={14} />
-          <span>Back to ASDMA Portal</span>
-        </button>
+          <span 
+            className="material-symbols-outlined text-[#004ac6] text-3xl" 
+            style={{ fontVariationSettings: "'FILL' 1" }}
+          >
+            grid_view
+          </span>
+          <h1 className="font-['Outfit',sans-serif] text-2xl font-extrabold tracking-tighter text-[#0F172A]">
+            RELIEFGRID OPS
+          </h1>
+        </div>
 
-        <div className="flex items-center gap-2 text-xs font-bold text-slate-400 bg-slate-900/80 px-3 py-1 rounded-full border border-slate-800">
-          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-          <span>Unified Access Gateway • Secure 256-bit TLS</span>
+        <div className="flex items-center space-x-2">
+          <button 
+            onClick={() => setActiveTab('national-gateway')}
+            className="text-xs font-bold text-[#475569] hover:text-[#004ac6] px-2.5 py-1 rounded-[4px] border border-[#E2E8F0] bg-white cursor-pointer"
+          >
+            States Directory
+          </button>
+          <span 
+            onClick={handleFastSOS}
+            title="Emergency SOS"
+            className="material-symbols-outlined text-[#DC2626] cursor-pointer hover:bg-[#ffdad6] transition-colors rounded-full p-2 active:scale-95 duration-150"
+            style={{ fontVariationSettings: "'FILL' 1" }}
+          >
+            emergency
+          </span>
         </div>
       </header>
 
-      {/* Hero Content & Multi-step Indicator */}
-      <main className="max-w-6xl mx-auto w-full my-auto py-8 z-10 flex flex-col items-center">
-        {/* Step Indicator */}
-        <div className="flex items-center gap-3 mb-6 bg-slate-900/90 border border-slate-800 rounded-full px-5 py-2">
-          <div className="flex items-center gap-1.5 text-xs text-emerald-400 font-semibold">
-            <CheckCircle2 size={14} />
-            <span>1. State Gateway</span>
-          </div>
-          <span className="text-slate-600">/</span>
-          <div className="flex items-center gap-1.5 text-xs text-amber-400 font-bold">
-            <span className="w-4 h-4 rounded-full bg-amber-400 text-slate-950 flex items-center justify-center text-[10px] font-extrabold">2</span>
-            <span>2. Select Access Role</span>
-          </div>
-          <span className="text-slate-600">/</span>
-          <div className="flex items-center gap-1.5 text-xs text-slate-500 font-medium">
-            <span className="w-4 h-4 rounded-full bg-slate-800 text-slate-400 flex items-center justify-center text-[10px]">3</span>
-            <span>3. Authenticate</span>
-          </div>
-        </div>
-
-        {/* Heading */}
-        <div className="text-center max-w-2xl mb-10">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-bold uppercase tracking-wider mb-3">
-            <Shield size={13} />
-            Institutional Disaster Management Protocol
-          </div>
-          <h1 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
-            Choose Your Operational Portal
-          </h1>
-          <p className="mt-2 text-sm text-slate-400 leading-relaxed">
-            Select your assigned governance tier to enter the designated operational console. All actions are logged under the Disaster Management Act, 2005.
-          </p>
-        </div>
-
-        {/* 3 Role Selection Cards */}
-        <div ref={cardsRef} className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
-          {/* 1. GOVERNMENT OFFICER CARD */}
-          <div className="group relative bg-gradient-to-b from-slate-900 to-slate-950 border border-slate-800 hover:border-blue-500/60 rounded-2xl p-6 transition-all duration-300 hover:shadow-2xl hover:shadow-blue-500/10 flex flex-col justify-between">
-            <div className="absolute top-4 right-4">
-              <span className="px-2.5 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-[10px] font-bold tracking-wider uppercase">
-                Tier 1 Official
-              </span>
-            </div>
-
-            <div>
-              <div className="w-14 h-14 rounded-xl bg-blue-600/10 border border-blue-500/20 flex items-center justify-center text-blue-400 mb-5 group-hover:scale-105 group-hover:bg-blue-600/20 transition-all">
-                <Building2 size={28} />
-              </div>
-
-              <h2 className="text-xl font-bold text-white mb-2 group-hover:text-blue-300 transition-colors">
-                Government Emergency Command
+      {/* Main Content Canvas */}
+      <main className="flex-grow flex flex-col items-center justify-center p-4 sm:p-8 space-y-6 sm:space-y-8 my-auto">
+        {/* Auth Container */}
+        <div className="w-full max-w-4xl grid grid-cols-1 md:grid-cols-12 gap-4 sm:gap-6 items-start">
+          
+          {/* Left Side: Role Selection & Info */}
+          <div className="col-span-1 md:col-span-7 flex flex-col space-y-4">
+            <div className="mb-2">
+              <h2 className="font-['Outfit',sans-serif] text-3xl font-extrabold text-[#0F172A] mb-1 tracking-wide">
+                ACCESS GATEWAY
               </h2>
-              <p className="text-xs text-slate-400 leading-relaxed mb-5">
-                For NDMA, SDMA, and District Emergency Response Officers (DEOC). Full tactical control, AI-driven resource dispatch, and GIS simulation.
+              <p className="text-sm sm:text-base text-[#475569]">
+                Select your operational clearance level to proceed into the system.
               </p>
-
-              {/* Feature Checklist */}
-              <div className="space-y-2 pt-3 border-t border-slate-800/80 mb-6">
-                <div className="flex items-center gap-2 text-xs text-slate-300 font-medium">
-                  <CheckCircle2 size={13} className="text-blue-400 shrink-0" />
-                  <span>RADS Multi-criteria Resource Solver</span>
-                </div>
-                <div className="flex items-center gap-2 text-xs text-slate-300 font-medium">
-                  <CheckCircle2 size={13} className="text-blue-400 shrink-0" />
-                  <span>Hydrodynamic Flood Inundation Engine</span>
-                </div>
-                <div className="flex items-center gap-2 text-xs text-slate-300 font-medium">
-                  <CheckCircle2 size={13} className="text-blue-400 shrink-0" />
-                  <span>Tactical OpenStreetMap & Route Detours</span>
-                </div>
-                <div className="flex items-center gap-2 text-xs text-slate-300 font-medium">
-                  <CheckCircle2 size={13} className="text-blue-400 shrink-0" />
-                  <span>District Incident Triage & Verification</span>
-                </div>
-              </div>
             </div>
 
-            <div className="space-y-2">
-              <button
-                onClick={() => handleSelectRole('OFFICER')}
-                className="w-full py-3 px-4 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold flex items-center justify-center gap-2 transition-all shadow-lg shadow-blue-600/20 cursor-pointer"
+            {/* Roles Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
+              {/* Role 1: Government Officer */}
+              <button 
+                type="button"
+                onClick={() => {
+                  setSelectedRole('OFFICER');
+                  setBadgeId('OP-7402');
+                }}
+                className={`bg-white border shadow-xs rounded-[4px] p-4 flex flex-col items-start transition-all text-left cursor-pointer ${
+                  selectedRole === 'OFFICER'
+                    ? 'border-[#004ac6] ring-1 ring-[#004ac6] bg-[#f7f9fb]'
+                    : 'border-[#E2E8F0] hover:border-[#004ac6]'
+                }`}
               >
-                <span>Officer Secure Login</span>
-                <ArrowRight size={14} />
+                <span 
+                  className="material-symbols-outlined text-[#004ac6] mb-2 text-2xl" 
+                  style={{ fontVariationSettings: "'FILL' 1" }}
+                >
+                  local_police
+                </span>
+                <span className="font-['JetBrains_Mono',monospace] text-xs text-[#0F172A] font-semibold uppercase mb-1">
+                  Level 1
+                </span>
+                <span className="text-sm font-semibold text-[#0F172A] leading-tight">
+                  Government<br/>Officer
+                </span>
               </button>
-              <button
-                onClick={() => handleQuickDemo('OFFICER')}
-                className="w-full py-2 px-3 rounded-lg bg-slate-850 hover:bg-slate-800 text-slate-400 hover:text-slate-200 text-[11px] font-semibold transition-colors cursor-pointer border border-slate-800"
+
+              {/* Role 2: Shelter Coordinator */}
+              <button 
+                type="button"
+                onClick={() => {
+                  setSelectedRole('SHELTER_COORDINATOR');
+                  setBadgeId('SDRF-SC-4409');
+                }}
+                className={`bg-white border shadow-xs rounded-[4px] p-4 flex flex-col items-start transition-all text-left cursor-pointer ${
+                  selectedRole === 'SHELTER_COORDINATOR'
+                    ? 'border-[#004ac6] ring-1 ring-[#004ac6] bg-[#f7f9fb]'
+                    : 'border-[#E2E8F0] hover:border-[#004ac6]'
+                }`}
               >
-                ⚡ Instant Officer Demo (Bypass Auth)
+                <span 
+                  className="material-symbols-outlined text-[#006780] mb-2 text-2xl" 
+                  style={{ fontVariationSettings: "'FILL' 1" }}
+                >
+                  home_work
+                </span>
+                <span className="font-['JetBrains_Mono',monospace] text-xs text-[#0F172A] font-semibold uppercase mb-1">
+                  Level 2
+                </span>
+                <span className="text-sm font-semibold text-[#0F172A] leading-tight">
+                  Shelter<br/>Coordinator
+                </span>
               </button>
+
+              {/* Role 3: Citizen & Victim */}
+              <button 
+                type="button"
+                onClick={() => {
+                  setSelectedRole('CITIZEN');
+                  setBadgeId('CIT-9840');
+                }}
+                className={`bg-white border shadow-xs rounded-[4px] p-4 flex flex-col items-start transition-all text-left cursor-pointer ${
+                  selectedRole === 'CITIZEN'
+                    ? 'border-[#004ac6] ring-1 ring-[#004ac6] bg-[#f7f9fb]'
+                    : 'border-[#E2E8F0] hover:border-[#004ac6]'
+                }`}
+              >
+                <span 
+                  className="material-symbols-outlined text-[#D97706] mb-2 text-2xl" 
+                  style={{ fontVariationSettings: "'FILL' 1" }}
+                >
+                  person
+                </span>
+                <span className="font-['JetBrains_Mono',monospace] text-xs text-[#0F172A] font-semibold uppercase mb-1">
+                  Level 3
+                </span>
+                <span className="text-sm font-semibold text-[#0F172A] leading-tight">
+                  Citizen &amp;<br/>Victim
+                </span>
+              </button>
+            </div>
+
+            <div className="mt-4 pt-4 border-t border-[#E2E8F0]">
+              <p className="font-['JetBrains_Mono',monospace] text-[11px] text-[#475569] uppercase tracking-wider font-semibold">
+                Secure Protocol Enforced. Activity Monitored.
+              </p>
             </div>
           </div>
 
-          {/* 2. SHELTER COORDINATOR CARD */}
-          <div className="group relative bg-gradient-to-b from-slate-900 to-slate-950 border border-slate-800 hover:border-purple-500/60 rounded-2xl p-6 transition-all duration-300 hover:shadow-2xl hover:shadow-purple-500/10 flex flex-col justify-between">
-            <div className="absolute top-4 right-4">
-              <span className="px-2.5 py-1 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-400 text-[10px] font-bold tracking-wider uppercase">
-                Field Operations
+          {/* Right Side: Login Form */}
+          <div className="col-span-1 md:col-span-5 bg-white border border-[#E2E8F0] shadow-xs rounded-[4px] p-6 sm:p-8 flex flex-col space-y-4 relative overflow-hidden">
+            <div className="absolute top-0 left-0 w-full h-1 bg-[#004ac6]"></div>
+            
+            <div className="flex items-center space-x-2 mb-1">
+              <span className="material-symbols-outlined text-[#0F172A] text-xl">lock</span>
+              <h3 className="text-base font-semibold text-[#0F172A]">
+                Secure Authentication
+              </h3>
+            </div>
+
+            <form onSubmit={handleInitializeSession} className="flex flex-col space-y-4 w-full">
+              {/* Dynamic Field 1 */}
+              {selectedRole === 'OFFICER' && (
+                <div className="flex flex-col space-y-1">
+                  <label className="font-['JetBrains_Mono',monospace] text-[11px] text-[#475569] uppercase font-semibold">
+                    Badge ID / Facility Code
+                  </label>
+                  <input 
+                    type="text"
+                    required
+                    value={badgeId}
+                    onChange={(e) => setBadgeId(e.target.value)}
+                    className="w-full bg-[#f7f9fb] border border-[#E2E8F0] rounded-[4px] px-3.5 py-2 font-['JetBrains_Mono',monospace] text-sm text-[#0F172A] focus:outline-none focus:border-[#004ac6] focus:ring-1 focus:ring-[#004ac6] shadow-inner" 
+                    placeholder="OP-0000" 
+                  />
+                </div>
+              )}
+
+              {selectedRole === 'SHELTER_COORDINATOR' && (
+                <>
+                  <div className="flex flex-col space-y-1">
+                    <label className="font-['JetBrains_Mono',monospace] text-[11px] text-[#475569] uppercase font-semibold">
+                      Assigned Relief Camp
+                    </label>
+                    <select
+                      value={selectedShelterId}
+                      onChange={(e) => setSelectedShelterId(e.target.value)}
+                      className="w-full bg-[#f7f9fb] border border-[#E2E8F0] rounded-[4px] px-3 py-2 text-xs text-[#0F172A] focus:outline-none focus:border-[#004ac6] focus:ring-1 focus:ring-[#004ac6]"
+                    >
+                      {shelterNodes.map((s) => (
+                        <option key={s.id} value={s.id}>
+                          {s.name} ({s.totalBedCapacity - s.currentOccupancy} free)
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className="flex flex-col space-y-1">
+                    <label className="font-['JetBrains_Mono',monospace] text-[11px] text-[#475569] uppercase font-semibold">
+                      Coordinator Badge ID
+                    </label>
+                    <input 
+                      type="text"
+                      required
+                      value={badgeId}
+                      onChange={(e) => setBadgeId(e.target.value)}
+                      className="w-full bg-[#f7f9fb] border border-[#E2E8F0] rounded-[4px] px-3.5 py-2 font-['JetBrains_Mono',monospace] text-sm text-[#0F172A] focus:outline-none focus:border-[#004ac6] focus:ring-1 focus:ring-[#004ac6] shadow-inner" 
+                      placeholder="SDRF-SC-4409" 
+                    />
+                  </div>
+                </>
+              )}
+
+              {selectedRole === 'CITIZEN' && (
+                <>
+                  <div className="flex flex-col space-y-1">
+                    <label className="font-['JetBrains_Mono',monospace] text-[11px] text-[#475569] uppercase font-semibold">
+                      Your Full Name
+                    </label>
+                    <input 
+                      type="text"
+                      required
+                      value={citizenName}
+                      onChange={(e) => setCitizenName(e.target.value)}
+                      className="w-full bg-[#f7f9fb] border border-[#E2E8F0] rounded-[4px] px-3.5 py-2 text-sm text-[#0F172A] focus:outline-none focus:border-[#004ac6] focus:ring-1 focus:ring-[#004ac6] shadow-inner" 
+                      placeholder="Full Name" 
+                    />
+                  </div>
+
+                  <div className="flex flex-col space-y-1">
+                    <label className="font-['JetBrains_Mono',monospace] text-[11px] text-[#475569] uppercase font-semibold">
+                      Mobile Phone Number
+                    </label>
+                    <input 
+                      type="tel"
+                      required
+                      value={citizenPhone}
+                      onChange={(e) => setCitizenPhone(e.target.value)}
+                      className="w-full bg-[#f7f9fb] border border-[#E2E8F0] rounded-[4px] px-3.5 py-2 font-['JetBrains_Mono',monospace] text-sm text-[#0F172A] focus:outline-none focus:border-[#004ac6] focus:ring-1 focus:ring-[#004ac6] shadow-inner" 
+                      placeholder="+91 98640-XXXXX" 
+                    />
+                  </div>
+                </>
+              )}
+
+              {/* Dynamic Field 2: Numeric Passcode */}
+              {selectedRole !== 'CITIZEN' && (
+                <div className="flex flex-col space-y-1">
+                  <label className="font-['JetBrains_Mono',monospace] text-[11px] text-[#475569] uppercase font-semibold">
+                    Numeric Passcode
+                  </label>
+                  <input 
+                    type="password"
+                    required
+                    value={passcode}
+                    onChange={(e) => setPasscode(e.target.value)}
+                    className="w-full bg-[#f7f9fb] border border-[#E2E8F0] rounded-[4px] px-3.5 py-2 font-['JetBrains_Mono',monospace] text-sm text-[#0F172A] focus:outline-none focus:border-[#004ac6] focus:ring-1 focus:ring-[#004ac6] shadow-inner tracking-widest" 
+                    placeholder="••••••" 
+                  />
+                </div>
+              )}
+
+              {/* Submit Button */}
+              <button 
+                type="submit"
+                className="w-full bg-[#004ac6] hover:bg-[#2563eb] text-white font-['JetBrains_Mono',monospace] text-xs uppercase font-bold py-3 rounded-[4px] transition-colors mt-2 shadow-xs flex items-center justify-center space-x-2 cursor-pointer"
+              >
+                <span>Initialize Session</span>
+                <span className="material-symbols-outlined text-sm">arrow_forward</span>
+              </button>
+            </form>
+
+            <div className="relative flex py-1 items-center">
+              <div className="flex-grow border-t border-[#E2E8F0]"></div>
+              <span className="flex-shrink-0 mx-2 text-[#475569] font-['JetBrains_Mono',monospace] text-xs font-semibold">
+                OR
               </span>
+              <div className="flex-grow border-t border-[#E2E8F0]"></div>
             </div>
 
-            <div>
-              <div className="w-14 h-14 rounded-xl bg-purple-600/10 border border-purple-500/20 flex items-center justify-center text-purple-400 mb-5 group-hover:scale-105 group-hover:bg-purple-600/20 transition-all">
-                <Home size={28} />
-              </div>
-
-              <h2 className="text-xl font-bold text-white mb-2 group-hover:text-purple-300 transition-colors">
-                Shelter & Relief Camp Node
-              </h2>
-              <p className="text-xs text-slate-400 leading-relaxed mb-5">
-                For Camp Commanders, Shelter In-Charges, and Ground Coordinators. Real-time capacity, victim intake, inventory, and NGO network synchronization.
-              </p>
-
-              {/* Feature Checklist */}
-              <div className="space-y-2 pt-3 border-t border-slate-800/80 mb-6">
-                <div className="flex items-center gap-2 text-xs text-slate-300 font-medium">
-                  <CheckCircle2 size={13} className="text-purple-400 shrink-0" />
-                  <span>Real-Time Bed & Demographics Occupancy</span>
-                </div>
-                <div className="flex items-center gap-2 text-xs text-slate-300 font-medium">
-                  <CheckCircle2 size={13} className="text-purple-400 shrink-0" />
-                  <span>Citizen Request Triage & Fulfillment</span>
-                </div>
-                <div className="flex items-center gap-2 text-xs text-slate-300 font-medium">
-                  <CheckCircle2 size={13} className="text-purple-400 shrink-0" />
-                  <span>Inventory Alerts & Reorder Requisitions</span>
-                </div>
-                <div className="flex items-center gap-2 text-xs text-slate-300 font-medium">
-                  <CheckCircle2 size={13} className="text-purple-400 shrink-0" />
-                  <span>Active NGO Network Coordination Hub</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <button
-                onClick={() => handleSelectRole('SHELTER_COORDINATOR')}
-                className="w-full py-3 px-4 rounded-xl bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold flex items-center justify-center gap-2 transition-all shadow-lg shadow-purple-600/20 cursor-pointer"
-              >
-                <span>Shelter Coordinator Login</span>
-                <ArrowRight size={14} />
-              </button>
-              <button
-                onClick={() => handleQuickDemo('SHELTER_COORDINATOR')}
-                className="w-full py-2 px-3 rounded-lg bg-slate-850 hover:bg-slate-800 text-slate-400 hover:text-slate-200 text-[11px] font-semibold transition-colors cursor-pointer border border-slate-800"
-              >
-                ⚡ Instant Shelter Demo (Pandu Camp #1)
-              </button>
-            </div>
-          </div>
-
-          {/* 3. CITIZEN & VICTIM PORTAL */}
-          <div className="group relative bg-gradient-to-b from-slate-900 to-slate-950 border border-slate-800 hover:border-amber-500/60 rounded-2xl p-6 transition-all duration-300 hover:shadow-2xl hover:shadow-amber-500/10 flex flex-col justify-between">
-            <div className="absolute top-4 right-4">
-              <span className="px-2.5 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 text-[10px] font-bold tracking-wider uppercase">
-                Public Access
+            {/* Fast SOS Access Button */}
+            <button 
+              type="button"
+              onClick={handleFastSOS}
+              className="w-full bg-[#DC2626] hover:bg-[#ba1a1a] text-white font-['JetBrains_Mono',monospace] text-xs uppercase font-bold py-3 rounded-[4px] transition-colors shadow-xs flex items-center justify-center space-x-2 cursor-pointer animate-pulse"
+            >
+              <span className="material-symbols-outlined text-base" style={{ fontVariationSettings: "'FILL' 1" }}>
+                warning
               </span>
-            </div>
-
-            <div>
-              <div className="w-14 h-14 rounded-xl bg-amber-600/10 border border-amber-500/20 flex items-center justify-center text-amber-400 mb-5 group-hover:scale-105 group-hover:bg-amber-600/20 transition-all">
-                <Radio size={28} className="animate-pulse" />
-              </div>
-
-              <h2 className="text-xl font-bold text-white mb-2 group-hover:text-amber-300 transition-colors">
-                Citizen Distress & Safety Hub
-              </h2>
-              <p className="text-xs text-slate-400 leading-relaxed mb-5">
-                For impacted citizens and victims. One-tap SOS distress beacon, GPS-guided nearby verified shelters/hospitals, and status tracking.
-              </p>
-
-              {/* Feature Checklist */}
-              <div className="space-y-2 pt-3 border-t border-slate-800/80 mb-6">
-                <div className="flex items-center gap-2 text-xs text-slate-300 font-medium">
-                  <CheckCircle2 size={13} className="text-amber-400 shrink-0" />
-                  <span>One-Tap SOS Beacon with GPS & Voice</span>
-                </div>
-                <div className="flex items-center gap-2 text-xs text-slate-300 font-medium">
-                  <CheckCircle2 size={13} className="text-amber-400 shrink-0" />
-                  <span>Live Verified Shelters, Hospitals & Food</span>
-                </div>
-                <div className="flex items-center gap-2 text-xs text-slate-300 font-medium">
-                  <CheckCircle2 size={13} className="text-amber-400 shrink-0" />
-                  <span>"I'm Safe" / Emergency Status Sharing</span>
-                </div>
-                <div className="flex items-center gap-2 text-xs text-slate-300 font-medium">
-                  <CheckCircle2 size={13} className="text-amber-400 shrink-0" />
-                  <span>Hazard Incident Reporting & Tracking</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <button
-                onClick={() => handleSelectRole('CITIZEN')}
-                className="w-full py-3 px-4 rounded-xl bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold flex items-center justify-center gap-2 transition-all shadow-lg shadow-amber-600/20 cursor-pointer"
-              >
-                <span>Citizen Sign In / Register</span>
-                <ArrowRight size={14} />
-              </button>
-              <button
-                onClick={() => handleQuickDemo('CITIZEN')}
-                className="w-full py-2 px-3 rounded-lg bg-slate-850 hover:bg-slate-800 text-slate-400 hover:text-slate-200 text-[11px] font-semibold transition-colors cursor-pointer border border-slate-800"
-              >
-                ⚡ Instant Citizen Access (Guest Mode)
-              </button>
-            </div>
+              <span>Fast SOS Guest Access</span>
+            </button>
           </div>
+
         </div>
       </main>
 
-      {/* Footer */}
-      <footer className="max-w-6xl mx-auto w-full text-center text-xs text-slate-500 py-4 border-t border-slate-900 z-10 flex flex-col sm:flex-row items-center justify-between gap-2">
-        <span>ReliefGrid Unified Platform • Governed by NDMA & ASDMA</span>
-        <span>Disaster Emergency Helplines: 1070 (National) • 1077 (Assam ASDMA) • 112 (Universal)</span>
+      {/* Footer Info */}
+      <footer className="w-full border-t border-[#E2E8F0] bg-white py-3 px-4 text-center text-xs text-[#475569] font-['JetBrains_Mono',monospace]">
+        <span>RELIEFGRID DEFENSE-GRADE DISASTER MANAGEMENT SYSTEM • ASDMA DEOC NODE</span>
       </footer>
     </div>
   );
